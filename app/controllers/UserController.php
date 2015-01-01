@@ -33,6 +33,7 @@ class UserController extends \BaseController {
 	{
 		$fb_id = Input::get('user.fb_id');
 		$name = Input::get('user.name');
+		$picture = Input::get('user.picture');
 
 		// test the DB-Connection
 		try
@@ -56,7 +57,12 @@ class UserController extends \BaseController {
 
 	   	DB::table('users')
             ->where('id', $id)
-            ->update(array('updated_at' => $date));
+            ->update(
+            	array(
+            			'picture' => $picture,
+            			'updated_at' => $date
+            		)
+            	);
 	   }
 	   else // insert user
 	   {
@@ -65,6 +71,7 @@ class UserController extends \BaseController {
 			    	array(
 			    			'fb_id' => $fb_id,
 			    			'name' => $name,
+			    			'picture' => $picture,
 			    			'created_at' => $date,
 			    			'updated_at' => $date
 			    		)
