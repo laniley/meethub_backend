@@ -76,7 +76,7 @@ class LocationController extends \BaseController {
 			    			'zip' => $zip,
 			    			'street' => $street,
 			    			'latitude' => $latitude,
-			    			'longitude' => $longitute
+			    			'longitude' => $longitude
             		)
             	);
 	 	}
@@ -92,7 +92,7 @@ class LocationController extends \BaseController {
 			    			'zip' => $zip,
 			    			'street' => $street,
 			    			'latitude' => $latitude,
-			    			'longitude' => $longitute
+			    			'longitude' => $longitude
 			    		)
 					);
 	   }
