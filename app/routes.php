@@ -12,3 +12,5 @@
 */
 
 Route::post('users', 'UserController@store');
+
+Route::post('events', 'EventController@store');

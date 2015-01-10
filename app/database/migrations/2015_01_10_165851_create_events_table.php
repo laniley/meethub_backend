@@ -15,7 +15,16 @@ class CreateEventsTable extends Migration {
 		Schema::create('events', function(Blueprint $table)
 		{
 			$table->increments('id');
+
+			$table->string('name');
+			$table->string('fb_id')->unique();
+			$table->string('description')->nullable();
+			$table->time('start_time');
+			$table->date('start_date');
+			$table->integer('location_id')->unsigned()->nullable();
 			$table->timestamps();
+
+			$table->foreign('location_id')->references('id')->on('locations');
 		});
 	}
 
