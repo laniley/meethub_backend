@@ -1,7 +1,7 @@
 <?php
 
 // can not be namend Event, because this is reserved by Laravel
-class myEvent extends Eloquent {
+class Message extends Eloquent {
 
 	/**
 	 * The database table used by the model.
@@ -15,8 +15,13 @@ class myEvent extends Eloquent {
 	 *
 	 * @var array
 	 */
-	public function location()
+	public function event()
  	{
-     	return $this->belongsTo('Location');
+     	return $this->hasOne('myEvent');
+ 	}
+
+ 	public function user()
+ 	{
+     	return $this->hasOne('User');
  	}
 }

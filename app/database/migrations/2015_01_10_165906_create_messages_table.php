@@ -15,6 +15,7 @@ class CreateMessagesTable extends Migration {
 		Schema::create('messages', function(Blueprint $table)
 		{
 			$table->increments('id');
+			$table->string('fb_id');
 			$table->string('subject');
 			$table->string('text');
 			$table->boolean('hasBeenRead')->default(false);

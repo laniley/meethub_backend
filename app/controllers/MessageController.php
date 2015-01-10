@@ -1,6 +1,6 @@
 <?php
 
-class EventController extends \BaseController {
+class MessageController extends \BaseController {
 
 	/**
 	 * Display a listing of the resource.
@@ -31,13 +31,10 @@ class EventController extends \BaseController {
 	 */
 	public function store()
 	{
-		$fb_id = Input::get('event.fb_id');
-		$name = Input::get('event.name');
-		$description = Input::get('event.description');
-		$start_time = Input::get('event.start_time');
-		$start_date = Input::get('event.start_date');
-		$status = Input::get('event.status');
-		$location_id = Input::get('event.location');
+		$fb_id = Input::get('message.fb_id');
+		$subject = Input::get('message.subject');
+		$user_id = Input::get('message.user');
+		$event_id = Input::get('message.event');
 
 		// test the DB-Connection
 		try
@@ -50,50 +47,46 @@ class EventController extends \BaseController {
 	   }
 
 	   // check if event already exists
-	   $event = DB::table('events')->where('fb_id', $fb_id)->first();
+	   $message = DB::table('messages')->where('fb_id', $fb_id)->first();
 
 	   $date = new \DateTime;
 
 	 	// save event if not already exists
-	 	if($event)
+	 	if($message)
 	 	{
-	 		$id = $event->id;
+	 		$id = $message->id;
 
-	 		DB::table('events')
+	 		DB::table('messages')
             ->where('id', $id)
             ->update(
             	array(
-            			'name' => $name,
-			    			'description' => $description,
-			    			'start_time' => $start_time,
-			    			'start_date' => $start_date,
-			    			'location_id' => $location_id,
-			    			'created_at' => $date,
+            			'subject' => $subject,
+			    			'user_id' => $user_id,
+			    			'event_id' => $event_id,
 			    			'updated_at' => $date
             		)
             	);
 	 	}
 	   else
 	   {
-			$id = DB::table('events')
+			$id = DB::table('messages')
 				->insertGetId(
 			    	array(
 			    			'fb_id' => $fb_id,
-			    			'name' => $name,
-			    			'description' => $description,
-			    			'start_time' => $start_time,
-			    			'start_date' => $start_date,
-			    			'location_id' => $location_id,
+			    			'subject' => $subject,
+			    			'user_id' => $user_id,
+			    			'event_id' => $event_id,
+			    			'created_at' => $date,
 			    			'updated_at' => $date
 			    		)
 					);
 	   }
 
-	   $event = myEvent::findOrFail($id);
-	   // $event->load('location');
-	   // $location = Location::find($event->location_id);
+	   $message = Message::findOrFail($id);
+	   // $event = myEvent::find($message->event_id);
+	   // $user = User::findOrFail($message->user_id);
 
-	   return '{"event":'.$event.' }';
+	   return '{ "message":'.$message.' }';
 	}
 
 
