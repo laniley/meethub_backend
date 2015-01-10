@@ -52,7 +52,10 @@ class LocationController extends \BaseController {
 	   }
 
 	   // check if location already exists
-	   $location = DB::table('locations')->where('fb_id', $fb_id)->first();
+	   $location = DB::table('locations')
+	   					->where('fb_id', $fb_id)
+	   					->whereNotNull('fb_id')
+	   					->first();
 
 	   if(!$location)
 	   {

@@ -88,8 +88,9 @@ class EventController extends \BaseController {
 	   }
 
 	   $event = myEvent::findOrFail($id);
+	   $location = Location::find($event->location_id);
 
-	   return '{"event":'.$event.'}';
+	   return '{"event":'.$event.', "location": {'.$location.'} }';
 	}
 
 
