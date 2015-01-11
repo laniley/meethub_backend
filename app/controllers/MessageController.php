@@ -46,12 +46,12 @@ class MessageController extends \BaseController {
 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
 	   }
 
-	   // check if event already exists
+	   // check if message already exists
 	   $message = DB::table('messages')->where('fb_id', $fb_id)->first();
 
 	   $date = new \DateTime;
 
-	 	// save event if not already exists
+	 	// update message - because it already exists
 	 	if($message)
 	 	{
 	 		$id = $message->id;
@@ -67,6 +67,7 @@ class MessageController extends \BaseController {
             		)
             	);
 	 	}
+	 	// save message - because it doesn't already exist
 	   else
 	   {
 			$id = DB::table('messages')
@@ -122,7 +123,42 @@ class MessageController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		$subject = Input::get('message.subject');
+		$hasBeenRead = Input::get('message.hasBeenRead');
+
+		// test the DB-Connection
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
+
+	   // check if message already exists
+	   $message = DB::table('messages')->where('id', $id)->first();
+
+	   $date = new \DateTime;
+
+	 	// update message - because it already exists
+	 	if($message)
+	 	{
+	 		$id = $message->id;
+
+	 		DB::table('messages')
+            ->where('id', $id)
+            ->update(
+            	array(
+            			'subject' => $subject,
+            			'hasBeenRead' => $hasBeenRead,
+            		)
+            	);
+	 	}
+
+	   $message = Message::findOrFail($id);
+
+	   return '{ "message":'.$message.' }';
 	}
 
 

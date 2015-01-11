@@ -17,4 +17,4 @@ Route::post('events', 'EventController@store');
 
 Route::post('locations', 'LocationController@store');
 
-Route::post('messages', 'MessageController@store');
+Route::resource('messages', 'MessageController');

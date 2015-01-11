@@ -8,7 +8,7 @@ class Message extends Eloquent {
 	 *
 	 * @var string
 	 */
-	protected $table = 'events';
+	protected $table = 'messages';
 
 	/**
 	 * The attributes excluded from the model's JSON form.
