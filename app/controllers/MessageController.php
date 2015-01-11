@@ -62,7 +62,6 @@ class MessageController extends \BaseController {
             	array(
             			'subject' => $subject,
 			    			'user_id' => $user_id,
-			    			// 'event_id' => $event_id,
 			    			'updated_at' => $date
             		)
             	);
@@ -76,7 +75,6 @@ class MessageController extends \BaseController {
 			    			'fb_id' => $fb_id,
 			    			'subject' => $subject,
 			    			'user_id' => $user_id,
-			    			// 'event_id' => $event_id,
 			    			'created_at' => $date,
 			    			'updated_at' => $date
 			    		)
@@ -150,6 +148,7 @@ class MessageController extends \BaseController {
             	array(
             			'subject' => $subject,
             			'hasBeenRead' => $hasBeenRead,
+            			'updated_at' => $date
             		)
             	);
 	 	}

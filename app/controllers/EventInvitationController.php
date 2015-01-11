@@ -47,18 +47,20 @@ class EventInvitationController extends \BaseController {
 	   }
 
 	   // check if eventInvitation already exists
-	   $eventInvitation = DB::table('mm_users_events')
-	   	->where('user_id', $user_id)
-	   	->where('event_id', $event_id)
-	   	->first();
+	   // $eventInvitation = DB::table('mm_users_events')
+	   // 	->where('user_id', $user_id)
+	   // 	->where('event_id', $event_id)
+	   // 	->first();
+
+	   $eventInvitation = EventInvitation::whereRaw('user_id = ? and event_id = ?', array($user_id, $event_id))->get();
 
 	   $date = new \DateTime;
 
 	 	// insert
 	 	if(!$eventInvitation)
 	 	{
-			DB::table('mm_users_events')
-				->insert(
+			$id = DB::table('mm_users_events')
+				->insertGetId(
 			    	array(
 			    			'event_id' => $event_id,
 			    			'user_id' => $user_id,
@@ -68,9 +70,11 @@ class EventInvitationController extends \BaseController {
 			    			'updated_at' => $date
 			    		)
 					);
+
+			$eventInvitation = EventInvitation::findOrFail($id);
 	   }
 
-	   $eventInvitation = EventInvitation::whereRaw('event_id = ? and user_id = ?', array($event_id, $user_id))->get();
+	   
 	   
 	   return '{"eventInvitation":'.$eventInvitation.' }';
 	}
@@ -108,7 +112,41 @@ class EventInvitationController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		$status = Input::get('eventInvitation.status');
+
+		// test the DB-Connection
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
+
+	   // check if eventInvitation already exists
+	   $eventInvitation = DB::table('mm_users_events')->where('id', $id)->first();
+
+	   $date = new \DateTime;
+
+	 	// update
+	 	if($eventInvitation)
+	 	{
+			$id = $eventInvitation->id;
+
+	 		DB::table('mm_users_events')
+            ->where('id', $id)
+            ->update(
+            	array(
+            			'status' => $status,
+            			'updated_at' => $date
+            		)
+            	);
+	   }
+
+	   $eventInvitation = EventInvitation::findOrFail($id);
+	   
+	   return '{"eventInvitation":'.$eventInvitation.' }';
 	}
 
 
