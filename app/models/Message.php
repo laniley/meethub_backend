@@ -15,9 +15,9 @@ class Message extends Eloquent {
 	 *
 	 * @var array
 	 */
-	public function event()
+	public function eventInvitation()
  	{
-     	return $this->hasOne('myEvent');
+     	return $this->hasOne('EventInvitation');
  	}
 
  	public function user()

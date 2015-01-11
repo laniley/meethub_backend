@@ -34,7 +34,7 @@ class MessageController extends \BaseController {
 		$fb_id = Input::get('message.fb_id');
 		$subject = Input::get('message.subject');
 		$user_id = Input::get('message.user');
-		$event_id = Input::get('message.event');
+		// $event_id = Input::get('message.event');
 
 		// test the DB-Connection
 		try
@@ -62,7 +62,7 @@ class MessageController extends \BaseController {
             	array(
             			'subject' => $subject,
 			    			'user_id' => $user_id,
-			    			'event_id' => $event_id,
+			    			// 'event_id' => $event_id,
 			    			'updated_at' => $date
             		)
             	);
@@ -76,7 +76,7 @@ class MessageController extends \BaseController {
 			    			'fb_id' => $fb_id,
 			    			'subject' => $subject,
 			    			'user_id' => $user_id,
-			    			'event_id' => $event_id,
+			    			// 'event_id' => $event_id,
 			    			'created_at' => $date,
 			    			'updated_at' => $date
 			    		)
@@ -84,8 +84,6 @@ class MessageController extends \BaseController {
 	   }
 
 	   $message = Message::findOrFail($id);
-	   // $event = myEvent::find($message->event_id);
-	   // $user = User::findOrFail($message->user_id);
 
 	   return '{ "message":'.$message.' }';
 	}

@@ -33,6 +33,7 @@ class EventInvitationController extends \BaseController {
 	{
 		$event_id = Input::get('eventInvitation.event');
 		$user_id = Input::get('eventInvitation.invited_user');
+		$message_id = Input::get('eventInvitation.message');
 		$status = Input::get('eventInvitation.status');
 
 		// test the DB-Connection
@@ -61,6 +62,7 @@ class EventInvitationController extends \BaseController {
 			    	array(
 			    			'event_id' => $event_id,
 			    			'user_id' => $user_id,
+			    			'message_id' => $message_id,
 			    			'status' => $status,
 			    			'created_at' => $date,
 			    			'updated_at' => $date

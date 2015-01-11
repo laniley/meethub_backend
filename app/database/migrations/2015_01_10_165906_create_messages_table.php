@@ -20,11 +20,9 @@ class CreateMessagesTable extends Migration {
 			$table->string('text');
 			$table->boolean('hasBeenRead')->default(false);
 			$table->integer('user_id')->unsigned();
-			$table->integer('event_id')->unsigned();
 			$table->timestamps();
 
 			$table->foreign('user_id')->references('id')->on('users');
-			$table->foreign('event_id')->references('id')->on('events');
 		});
 	}
 

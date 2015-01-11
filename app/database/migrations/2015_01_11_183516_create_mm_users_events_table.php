@@ -16,12 +16,14 @@ class CreateMmUsersEventsTable extends Migration {
 		{
 			$table->integer('event_id')->unsigned();
 			$table->integer('user_id')->unsigned();
+			$table->integer('message_id')->unsigned();
 			$table->string('status');
 			$table->timestamps();
 
 			$table->primary(array('event_id', 'user_id'));
 			$table->foreign('event_id')->references('id')->on('events');
 			$table->foreign('user_id')->references('id')->on('users');
+			$table->foreign('message_id')->references('id')->on('messages');
 		});
 	}
 
