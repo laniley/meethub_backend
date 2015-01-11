@@ -50,7 +50,10 @@ class EventController extends \BaseController {
 	   }
 
 	   // check if event already exists
-	   $event = DB::table('events')->where('fb_id', $fb_id)->first();
+	   $event = DB::table('events')
+	   				->where('fb_id', $fb_id)
+	   				->whereNotNull('fb_id')
+	   				->first();
 
 	   $date = new \DateTime;
 

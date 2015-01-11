@@ -46,7 +46,10 @@ class UserController extends \BaseController {
 	   }
 
 	   // check if user already exists
-	   $user = DB::table('users')->where('fb_id', $fb_id)->first();
+	   $user = DB::table('users')
+	   			->where('fb_id', $fb_id)
+	   			->whereNotNull('fb_id')
+	   			->first();
 
 	   $date = new \DateTime;
 

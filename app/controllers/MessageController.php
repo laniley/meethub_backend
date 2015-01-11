@@ -34,7 +34,6 @@ class MessageController extends \BaseController {
 		$fb_id = Input::get('message.fb_id');
 		$subject = Input::get('message.subject');
 		$user_id = Input::get('message.user');
-		// $event_id = Input::get('message.event');
 
 		// test the DB-Connection
 		try
@@ -47,7 +46,10 @@ class MessageController extends \BaseController {
 	   }
 
 	   // check if message already exists
-	   $message = DB::table('messages')->where('fb_id', $fb_id)->first();
+	   $message = DB::table('messages')
+	   				->where('fb_id', $fb_id)
+	   				->whereNotNull('fb_id')
+	   				->first();
 
 	   $date = new \DateTime;
 

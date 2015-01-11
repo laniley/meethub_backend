@@ -47,17 +47,21 @@ class EventInvitationController extends \BaseController {
 	   }
 
 	   // check if eventInvitation already exists
-	   // $eventInvitation = DB::table('mm_users_events')
-	   // 	->where('user_id', $user_id)
-	   // 	->where('event_id', $event_id)
-	   // 	->first();
+	   $eventInvitation = DB::table('mm_users_events')
+	   	->where('user_id', $user_id)
+	   	->where('event_id', $event_id)
+	   	->first();
 
-	   $eventInvitation = EventInvitation::whereRaw('user_id = ? and event_id = ?', array($user_id, $event_id))->get();
+	   // $eventInvitation = EventInvitation::whereRaw('user_id = ? and event_id = ? and user_id IS NOT NULL and event_id IS NOT NULL', array($user_id, $event_id))->get();
 
 	   $date = new \DateTime;
 
 	 	// insert
-	 	if(!$eventInvitation)
+	 	if($eventInvitation)
+	 	{
+	 		$eventInvitation = EventInvitation::findOrFail($eventInvitation->id);
+	 	}
+	 	else
 	 	{
 			$id = DB::table('mm_users_events')
 				->insertGetId(
@@ -74,8 +78,6 @@ class EventInvitationController extends \BaseController {
 			$eventInvitation = EventInvitation::findOrFail($id);
 	   }
 
-	   
-	   
 	   return '{"eventInvitation":'.$eventInvitation.' }';
 	}
 
