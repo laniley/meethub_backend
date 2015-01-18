@@ -14,6 +14,8 @@ class Location extends Eloquent{
 	 *
 	 * @var array
 	 */
+	protected $hidden = array('created_at', 'updated_at');
+
 	public function events()
  	{
      	return $this->hasMany('Event');

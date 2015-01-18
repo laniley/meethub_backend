@@ -9,7 +9,22 @@ class LocationController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+		$fb_id = Input::get('fb_id');
+		$name = Input::get('name');
+
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
+
+	   // check if location already exists
+   	$location = Location::where('name', '=', $name)->first();
+
+	   return '{"locations":['.$location.']}';
 	}
 
 
@@ -107,14 +122,48 @@ class LocationController extends \BaseController {
 
 
 	/**
-	 * Display the specified resource.
+	 * GET a specific resource
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
 	public function show($id)
 	{
-		//
+		$fb_id = Input::get('location.fb_id');
+		$name = Input::get('location.name');
+
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
+
+	   // check if location already exists
+   	$location = DB::table('locations')
+   					->where('fb_id', $fb_id)
+   					->whereNotNull('fb_id')
+   					->first();
+
+	   if(!$location)
+	   {
+	   	$location = DB::table('locations')->where('name', $name)->first();
+	   }
+
+	   if($location)
+	 	{
+	 		$id = $location->id;
+
+	 		$location = Location::findOrFail($id);
+
+	   	return '{"location":'.$location.'}';
+	 	}
+	 	else
+	 	{
+	 		return 'null';
+	 	}
 	}
 
 

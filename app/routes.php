@@ -16,6 +16,6 @@ Route::post('users', 'UserController@store');
 Route::post('events', 'EventController@store');
 Route::resource('eventInvitations', 'EventInvitationController');
 
-Route::post('locations', 'LocationController@store');
+Route::resource('locations', 'LocationController');
 
 Route::resource('messages', 'MessageController');
