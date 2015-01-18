@@ -32,8 +32,10 @@ class UserController extends \BaseController {
 	public function store()
 	{
 		$fb_id = Input::get('user.fb_id');
-		$name = Input::get('user.name');
+		$first_name = Input::get('user.first_name');
+		$last_name = Input::get('user.last_name');
 		$picture = Input::get('user.picture');
+		$gender = Input::get('user.gender');
 
 		// test the DB-Connection
 		try
@@ -73,7 +75,9 @@ class UserController extends \BaseController {
 				->insertGetId(
 			    	array(
 			    			'fb_id' => $fb_id,
-			    			'name' => $name,
+			    			'first_name' => $first_name,
+			    			'last_name' => $last_name,
+			    			'gender' => $gender,
 			    			'picture' => $picture,
 			    			'created_at' => $date,
 			    			'updated_at' => $date

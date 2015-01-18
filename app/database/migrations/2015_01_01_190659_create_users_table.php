@@ -16,9 +16,11 @@ class CreateUsersTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('fb_id')->unique();
-			$table->string('name');
-			$table->string('picture');
-			$table->string('locale', 2);
+			$table->string('first_name')->nullable();
+			$table->string('last_name')->nullable();
+			$table->string('picture')->nullable();
+			$table->string('gender')->nullable();
+			$table->string('locale', 2)->nullable();
 			$table->timestamps();
 		});
 	}
