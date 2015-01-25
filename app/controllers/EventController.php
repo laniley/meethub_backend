@@ -9,7 +9,21 @@ class EventController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+		$fb_id = Input::get('fb_id');
+
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
+
+	   // check if event already exists
+   	$events = myEvent::where('fb_id', '=', $fb_id)->get();
+
+	   return '{"events":'.$events.'}';
 	}
 
 

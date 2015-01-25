@@ -14,7 +14,12 @@ class Meethub extends Eloquent{
 	 *
 	 * @var array
 	 */
-	public function users()
+	public function founder()
+ 	{
+     	return $this->hasOne('User');
+ 	}
+
+ 	public function members()
  	{
      	return $this->belongsToMany('User');
  	}

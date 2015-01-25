@@ -15,7 +15,12 @@ class CreateMeethubsTable extends Migration {
 		Schema::create('meethubs', function(Blueprint $table)
 		{
 			$table->increments('id');
+			$table->string('name');
+			$table->string('short_description')->nullable();
+			$table->integer('founder_id')->unsigned();
 			$table->timestamps();
+
+			$table->foreign('founder_id')->references('id')->on('users');
 		});
 	}
 

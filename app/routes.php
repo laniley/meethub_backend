@@ -13,7 +13,10 @@
 
 Route::post('users', 'UserController@store');
 
-Route::post('events', 'EventController@store');
+Route::resource('meethubs', 'MeethubController');
+
+Route::resource('events', 'EventController');
+
 Route::resource('eventInvitations', 'EventInvitationController');
 
 Route::resource('locations', 'LocationController');
