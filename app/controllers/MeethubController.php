@@ -28,6 +28,8 @@ class MeethubController extends \BaseController {
 		foreach ($memberships as $membership)
 		{
 		   $meethub = Meethub::findOrFail($membership->meethub_id);
+		   $founder = $meethub->founder_id;
+		   $meethub["founder"] = $founder;
 		   array_push($meethubs, $meethub);
 		}
 

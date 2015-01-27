@@ -14,6 +14,8 @@ class Meethub extends Eloquent{
 	 *
 	 * @var array
 	 */
+	protected $hidden = array('founder_id');
+
 	public function founder()
  	{
      	return $this->hasOne('User');
