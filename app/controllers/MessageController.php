@@ -9,7 +9,28 @@ class MessageController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+		$user_id = Input::get('user');
+
+		// test the DB-Connection
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
+
+	   $messages = Message::where('user_id', '=', $user_id)->get();
+	   // $messages->load('user');
+
+	   foreach ($messages as $message)
+		{
+		   $message["user"] = $message->user_id;
+		   $message["eventInvitation"] = $message->eventInvitation_id;
+		}
+
+	   return '{ "messages": '.$messages.' }';
 	}
 
 

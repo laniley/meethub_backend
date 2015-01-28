@@ -15,6 +15,8 @@ class Message extends Eloquent {
 	 *
 	 * @var array
 	 */
+	protected $hidden = array('user_id');
+
 	public function eventInvitation()
  	{
      	return $this->hasOne('EventInvitation');
@@ -22,6 +24,6 @@ class Message extends Eloquent {
 
  	public function user()
  	{
-     	return $this->hasOne('User');
+     	return $this->belongsTo('User');
  	}
 }

@@ -122,7 +122,7 @@ class EventController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		//
+
 	}
 
 
@@ -146,7 +146,19 @@ class EventController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
+
+	   // check if event already exists
+   	$event = myEvent::findOrFail($id);
+
+	   return '{"event":'.$event.'}';
 	}
 
 

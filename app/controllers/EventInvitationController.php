@@ -9,7 +9,51 @@ class EventInvitationController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+		$user_id = Input::get('invited_user');
+
+		// test the DB-Connection
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
+
+	   $invites = EventInvitation::where('user_id', '=', $user_id)->get();
+	   $events = [];
+	   $users = [];
+	   $messages = [];
+	   $locations = [];
+
+	   foreach ($invites as $invite)
+		{
+		   $invite["event"] = $invite->event_id;
+		   $invite["invited_user"] = $invite->user_id;
+		   $invite["message"] = $invite->message_id;
+
+		   $event = myEvent::find($invite->event_id);
+		   $event["locaion"] = $event->location_id;
+
+		   $user = User::find($invite->user_id);
+		   $message = Message::find($invite->message_id);
+		   $location = Location::find($event->location_id);
+
+		   if(!in_array($event, $events))
+		   	array_push($events, $event);
+
+		   if(!in_array($location, $locations))
+		   	array_push($locations, $location);
+
+		   if(!in_array($user, $users))
+		   	array_push($users, $user);
+		   
+		   if(!in_array($message, $messages))
+		   	array_push($messages, $message);
+		}
+
+	   return '{ "eventInvitations": '.$invites.', "events": ['.implode(',', $events).'], "invited_users": ['.implode(',', $users).'], "messages": ['.implode(',', $messages).'], "locations": ['.implode(',', $locations).'] }';
 	}
 
 
