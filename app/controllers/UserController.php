@@ -87,7 +87,35 @@ class UserController extends \BaseController {
 
 	   $user = User::findOrFail($id);
 
-	   return '{"user":'.$user.'}';
+	   $friendships = DB::table('friendships')
+				->where('user_id', '=', $id)
+		      ->orWhere('friend_id', '=', $id)
+		      ->get();
+
+		$friend_ids = [];
+		$friends = [];
+
+      foreach($friendships as $friendship_object)
+	   {
+	   	$friendship = (array)$friendship_object;
+
+	   	$friend_id = null;
+	   	
+	   	if($friendship["user_id"] != $id)
+	   		$friend_id = $friendship["user_id"];
+	   	else
+	   		$friend_id = $friendship["friend_id"];
+
+	   	array_push($friend_ids, $friend_id);
+
+	   	$friend = User::findOrFail($friend_id);
+
+	   	array_push($friends, $friend);
+	   }
+
+	   $user["friends"] = $friend_ids;
+
+	   return '{"user":'.$user.', "friends": ['.implode(',', $friends).'] }';
 	}
 
 
@@ -99,7 +127,9 @@ class UserController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		//
+	   $user = User::findOrFail($id);
+
+	   return '{ "user":'.$user.' }';
 	}
 
 
@@ -123,7 +153,65 @@ class UserController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		$fb_id = Input::get('user.fb_id');
+		$first_name = Input::get('user.first_name');
+		$last_name = Input::get('user.last_name');
+		$picture = Input::get('user.picture');
+		$gender = Input::get('user.gender');
+		$friends = Input::get('user.friends');
+
+		// test the DB-Connection
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
+
+	   $date = new \DateTime;
+
+	   $user = User::findOrFail($id);
+
+	   $user->fb_id = $fb_id;
+	   $user->first_name = $first_name;
+	   $user->last_name = $last_name;
+	   $user->picture = $picture;
+	   $user->gender = $gender;
+
+	   $user->save();
+
+	   // Friendships
+	 //   foreach ($friends as $friend_id)
+		// {
+		// 	// check if friendship already exists
+		//    $friendship = DB::table('friendships')
+		//    				->where('user_id', $friend_id)
+		//    				->orWhere('friend_id', $friend_id)
+		//    				->first();
+
+		//    $date = new \DateTime;
+
+		//  	if(!$friendship)
+		//  	{
+		// 		$friendship_id = DB::table('friendships')
+		// 			->insertGetId(
+		// 		    	array(
+		// 		    			'user_id' => $id,
+		// 		    			'friend_id' => $friend_id,
+		// 		    			'created_at' => $date,
+		// 		    			'updated_at' => $date
+		// 		    		)
+		// 				);
+		//    }
+		// }
+
+	   $user = User::findOrFail($id);
+
+	   // $friends = $user->friends;
+
+	   return '{"user":'.$user.'}';
 	}
 
 

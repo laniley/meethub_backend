@@ -1,6 +1,6 @@
 <?php
 
-class EventInvitationController extends \BaseController {
+class FriendshipController extends \BaseController {
 
 	/**
 	 * Display a listing of the resource.
@@ -9,7 +9,7 @@ class EventInvitationController extends \BaseController {
 	 */
 	public function index()
 	{
-		$user_id = Input::get('invited_user');
+		$user_id = Input::get('user');
 
 		// test the DB-Connection
 		try
@@ -21,39 +21,26 @@ class EventInvitationController extends \BaseController {
 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
 	   }
 
-	   $invites = EventInvitation::where('user_id', '=', $user_id)->get();
-	   $events = [];
+	   $friendships = Friendship::where('user_id', '=', $user_id)->get();
 	   $users = [];
-	   $messages = [];
-	   $locations = [];
+	   $friends = [];
 
-	   foreach ($invites as $invite)
+	   foreach ($friendships as $friendship)
 		{
-		   $invite["event"] = $invite->event_id;
-		   $invite["invited_user"] = $invite->user_id;
-		   $invite["message"] = $invite->message_id;
+		   $friendship["user"] = $friendship->user_id;
+		   $friendship["friend"] = $friendship->friend_id;
 
-		   $event = myEvent::find($invite->event_id);
-		   $event["location"] = $event->location_id;
-
-		   $user = User::find($invite->user_id);
-		   $message = Message::find($invite->message_id);
-		   $location = Location::find($event->location_id);
-
-		   if(!in_array($event, $events))
-		   	array_push($events, $event);
-
-		   if(!in_array($location, $locations))
-		   	array_push($locations, $location);
+		   $user = User::find($friendship->user_id);
+		   $friend = User::find($friendship->friend_id);
 
 		   if(!in_array($user, $users))
 		   	array_push($users, $user);
 		   
-		   if(!in_array($message, $messages))
-		   	array_push($messages, $message);
+		   if(!in_array($friend, $friends))
+		   	array_push($friends, $friend);
 		}
 
-	   return '{ "eventInvitations": '.$invites.', "events": ['.implode(',', $events).'], "invited_users": ['.implode(',', $users).'], "messages": ['.implode(',', $messages).'], "locations": ['.implode(',', $locations).'] }';
+	   return '{ "users": '.$invites.', "events": ['.implode(',', $events).'], "invited_users": ['.implode(',', $users).'], "messages": ['.implode(',', $messages).'], "locations": ['.implode(',', $locations).'] }';
 	}
 
 

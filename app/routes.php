@@ -11,9 +11,11 @@
 |
 */
 
-Route::post('users', 'UserController@store');
+Route::resource('users', 'UserController');
 
 Route::resource('meethubs', 'MeethubController');
+
+Route::resource('friends', 'FriendshipController');
 
 Route::resource('events', 'EventController');
 
