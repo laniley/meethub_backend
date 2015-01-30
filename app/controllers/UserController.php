@@ -9,7 +9,59 @@ class UserController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+		// test the DB-Connection
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
+
+	   if(Input::has('fb_id'))
+	   {
+	   	$fb_id = Input::get('fb_id');
+
+	   	$users = User::where('fb_id', '=', $fb_id)->get();
+	   	// return DB::getQueryLog();
+
+	   	foreach($users as $user)
+	   	{
+	   		$friendships = DB::table('friendships')
+				->where('user_id', '=', $user->id)
+		      ->orWhere('friend_id', '=', $user->id)
+		      ->get();
+
+				$friend_ids = [];
+				$friends = [];
+
+				foreach($friendships as $friendship_object)
+			   {
+			   	$friendship = (array)$friendship_object;
+
+			   	$friend_id = null;
+			   	
+			   	if($friendship["user_id"] != $id)
+			   		$friend_id = $friendship["user_id"];
+			   	else
+			   		$friend_id = $friendship["friend_id"];
+
+			   	array_push($friend_ids, $friend_id);
+
+			   	$friend = User::findOrFail($friend_id);
+
+			   	array_push($friends, $friend);
+			   }
+
+			   $user["friends"] = $friend_ids;
+		   }
+
+		   // return '{"user":'.$user.', "friends": ['.implode(',', $friends).'] }';
+		   return '{ "users": '.$users.' }';
+	   }
+	   else
+	   	$users = User::all();
 	}
 
 
