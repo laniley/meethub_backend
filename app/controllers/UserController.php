@@ -42,7 +42,7 @@ class UserController extends \BaseController {
 
 			   	$friend_id = null;
 			   	
-			   	if($friendship["user_id"] != $id)
+			   	if($friendship["user_id"] != $user->id)
 			   		$friend_id = $friendship["user_id"];
 			   	else
 			   		$friend_id = $friendship["friend_id"];
@@ -88,6 +88,7 @@ class UserController extends \BaseController {
 		$last_name = Input::get('user.last_name');
 		$picture = Input::get('user.picture');
 		$gender = Input::get('user.gender');
+		$friends = Input::get('user.friends');
 
 		// test the DB-Connection
 		try
@@ -138,6 +139,16 @@ class UserController extends \BaseController {
 	   }
 
 	   $user = User::findOrFail($id);
+
+	   foreach($friends as $friend)
+	   {
+	   	Friendship::firstOrCreate(array(
+	   		'user_id' => $id,
+	   		'friend_id' => $friend,
+	   		'created_at' => $date,
+			   'updated_at' => $date
+	   	));
+	   }
 
 	   $friendships = DB::table('friendships')
 				->where('user_id', '=', $id)
@@ -234,36 +245,58 @@ class UserController extends \BaseController {
 
 	   $user->save();
 
-	   // Friendships
-	 //   foreach ($friends as $friend_id)
-		// {
-		// 	// check if friendship already exists
-		//    $friendship = DB::table('friendships')
-		//    				->where('user_id', $friend_id)
-		//    				->orWhere('friend_id', $friend_id)
-		//    				->first();
+	   foreach($friends as $friend)
+	   {
+	   	$friendships = DB::table('friendships')
+				->where(DB::raw(' ( user_id = '.$id.' AND friend_id = '.$friend.' ) OR ( user_id = '.$friend.' AND friend_id = '.$id.' ) '))
+		      ->get();
 
-		//    $date = new \DateTime;
+		   // return DB::getQueryLog();
+		   if(count($friendships) === 0)
+	   	{
+	   		DB::table('friendships')
+				->insert(
+			    	array(
+			    			'user_id' => $id,
+			    			'friend_id' => $friend,
+			    			'created_at' => $date,
+			    			'updated_at' => $date
+			    		)
+					);
+	   	}
+	   }
 
-		//  	if(!$friendship)
-		//  	{
-		// 		$friendship_id = DB::table('friendships')
-		// 			->insertGetId(
-		// 		    	array(
-		// 		    			'user_id' => $id,
-		// 		    			'friend_id' => $friend_id,
-		// 		    			'created_at' => $date,
-		// 		    			'updated_at' => $date
-		// 		    		)
-		// 				);
-		//    }
-		// }
+	   // $friendships = DB::table('friendships')
+				// ->where('user_id', '=', $id)
+		  //     ->orWhere('friend_id', '=', $id)
+		  //     ->get();
 
-	   $user = User::findOrFail($id);
+		// $friend_ids = [];
+		// $friends = [];
 
-	   // $friends = $user->friends;
+  //     foreach($friendships as $friendship_object)
+	 //   {
+	 //   	$friendship = (array)$friendship_object;
 
-	   return '{"user":'.$user.'}';
+	 //   	$friend_id = null;
+	   	
+	 //   	if($friendship["user_id"] != $id)
+	 //   		$friend_id = $friendship["user_id"];
+	 //   	else
+	 //   		$friend_id = $friendship["friend_id"];
+
+	 //   	array_push($friend_ids, $friend_id);
+
+	 //   	$friend = User::findOrFail($friend_id);
+
+	 //   	array_push($friends, $friend);
+	 //   }
+
+	 //   $user["friends"] = $friend_ids;
+
+	   // return '{"user":'.$user.', "friends": ['.implode(',', $friends).'] }';
+
+	   return '{"user":'.$user.' }';
 	}
 
 

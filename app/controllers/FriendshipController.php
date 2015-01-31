@@ -62,54 +62,7 @@ class FriendshipController extends \BaseController {
 	 */
 	public function store()
 	{
-		$event_id = Input::get('eventInvitation.event');
-		$user_id = Input::get('eventInvitation.invited_user');
-		$message_id = Input::get('eventInvitation.message');
-		$status = Input::get('eventInvitation.status');
-
-		// test the DB-Connection
-		try
-	   {
-	      $pdo = DB::connection('mysql')->getPdo();
-	   }
-	   catch(PDOException $exception)
-	   {
-	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
-	   }
-
-	   // check if eventInvitation already exists
-	   $eventInvitation = DB::table('mm_users_events')
-	   	->where('user_id', $user_id)
-	   	->where('event_id', $event_id)
-	   	->first();
-
-	   // $eventInvitation = EventInvitation::whereRaw('user_id = ? and event_id = ? and user_id IS NOT NULL and event_id IS NOT NULL', array($user_id, $event_id))->get();
-
-	   $date = new \DateTime;
-
-	 	// insert
-	 	if($eventInvitation)
-	 	{
-	 		$eventInvitation = EventInvitation::findOrFail($eventInvitation->id);
-	 	}
-	 	else
-	 	{
-			$id = DB::table('mm_users_events')
-				->insertGetId(
-			    	array(
-			    			'event_id' => $event_id,
-			    			'user_id' => $user_id,
-			    			'message_id' => $message_id,
-			    			'status' => $status,
-			    			'created_at' => $date,
-			    			'updated_at' => $date
-			    		)
-					);
-
-			$eventInvitation = EventInvitation::findOrFail($id);
-	   }
-
-	   return '{"eventInvitation":'.$eventInvitation.' }';
+		
 	}
 
 
