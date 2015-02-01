@@ -28,9 +28,22 @@ class MeethubController extends \BaseController {
 		foreach ($memberships as $membership)
 		{
 		   $meethub = Meethub::findOrFail($membership->meethub_id);
+		   
 		   $founder = $meethub->founder_id;
 		   $meethub["founder"] = $founder;
-		   array_push($meethubs, $meethub);
+
+		   $memberships_of_meethub = MeethubMembership::where('meethub_id', '=', $membership->meethub_id)->get();
+
+		   $members = [];
+
+		   foreach ($memberships_of_meethub as $membership_of_meethub)
+			{
+				array_push($members, $membership_of_meethub->user_id);
+			}
+
+			$meethub["members"] = $members;
+
+			array_push($meethubs, $meethub);
 		}
 
 	   return '{ "meethubs": ['.implode(',', $meethubs).'] }';
