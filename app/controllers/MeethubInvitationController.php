@@ -78,6 +78,7 @@ class MeethubInvitationController extends \BaseController {
 		$to_id = Input::get('meethubInvitation.invited_user');
 		$meethub_id = Input::get('meethubInvitation.meethub');
 		$message_id = Input::get('meethubInvitation.message');
+		$status = Input::get('meethubInvitation.status');
 
 		// test the DB-Connection
 		try
@@ -110,6 +111,7 @@ class MeethubInvitationController extends \BaseController {
 			    			'user_id' => $to_id,
 			    			'meethub_id' => $meethub_id,
 			    			'message_id' => $message_id,
+			    			'status' => $status,
 			    			'created_at' => $date,
 			    			'updated_at' => $date
 			    		)
@@ -130,7 +132,22 @@ class MeethubInvitationController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		//
+		// test the DB-Connection
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
+
+	   $invitation = MeethubMembership::findOrFail($id);
+	   $invitation["invited_user"] = $invitation["user_id"];
+	   $invitation["meethub"] = $invitation["meethub_id"];
+	   $invitation["message"] = $invitation["message_id"];
+	   
+	   return '{ "meethub-invitation":'.$invitation.' }';
 	}
 
 
