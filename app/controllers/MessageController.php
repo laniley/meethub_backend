@@ -21,13 +21,14 @@ class MessageController extends \BaseController {
 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
 	   }
 
-	   $messages = Message::where('user_id', '=', $user_id)->get();
+	   $messages = Message::where('to_user_id', '=', $user_id)->get();
 	   // $messages->load('user');
 
 	   foreach ($messages as $message)
 		{
 		   $message["user"] = $message->user_id;
 		   $message["eventInvitation"] = $message->eventInvitation_id;
+		   $message["meethubInvitation"] = $message->meethubInvitation_id;
 		}
 
 	   return '{ "messages": '.$messages.' }';
@@ -52,10 +53,13 @@ class MessageController extends \BaseController {
 	 */
 	public function store()
 	{
+		$id = Input::get('message.id');
 		$fb_id = Input::get('message.fb_id');
+		$from_user_id = Input::get('message.from_user');
+		$to_user_id = Input::get('message.to_user');
 		$subject = Input::get('message.subject');
-		$user_id = Input::get('message.user');
-
+		$text = Input::get('message.text');
+		
 		// test the DB-Connection
 		try
 	   {
@@ -67,10 +71,21 @@ class MessageController extends \BaseController {
 	   }
 
 	   // check if message already exists
-	   $message = DB::table('messages')
+	   if($id !== null)
+	   {
+	   	$message = DB::table('messages')
+	   				->where('id', $id)
+	   				->whereNotNull('id')
+	   				->first();
+	   }
+	   else
+	   {
+	   	$message = DB::table('messages')
 	   				->where('fb_id', $fb_id)
 	   				->whereNotNull('fb_id')
 	   				->first();
+	   }
+	   
 
 	   $date = new \DateTime;
 
@@ -83,8 +98,8 @@ class MessageController extends \BaseController {
             ->where('id', $id)
             ->update(
             	array(
-            			'subject' => $subject,
-			    			'user_id' => $user_id,
+			    			'subject' => $subject,
+			    			'text' => $text,
 			    			'updated_at' => $date
             		)
             	);
@@ -96,8 +111,10 @@ class MessageController extends \BaseController {
 				->insertGetId(
 			    	array(
 			    			'fb_id' => $fb_id,
+			    			'from_user_id' => $from_user_id,
+			    			'to_user_id' => $to_user_id,
 			    			'subject' => $subject,
-			    			'user_id' => $user_id,
+			    			'text' => $text,
 			    			'created_at' => $date,
 			    			'updated_at' => $date
 			    		)
@@ -143,6 +160,7 @@ class MessageController extends \BaseController {
 	public function update($id)
 	{
 		$subject = Input::get('message.subject');
+		$text = Input::get('message.text');
 		$hasBeenRead = Input::get('message.hasBeenRead');
 
 		// test the DB-Connection
@@ -170,6 +188,7 @@ class MessageController extends \BaseController {
             ->update(
             	array(
             			'subject' => $subject,
+            			'text' => $text,
             			'hasBeenRead' => $hasBeenRead,
             			'updated_at' => $date
             		)

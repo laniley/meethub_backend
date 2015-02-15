@@ -15,14 +15,16 @@ class CreateMessagesTable extends Migration {
 		Schema::create('messages', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('fb_id');
+			$table->string('fb_id')->nullable();
+			$table->integer('from_user_id')->unsigned()->nullable();
+			$table->integer('to_user_id')->unsigned();
 			$table->string('subject');
-			$table->string('text');
+			$table->string('text')->nullable();
 			$table->boolean('hasBeenRead')->default(false);
-			$table->integer('user_id')->unsigned();
 			$table->timestamps();
 
-			$table->foreign('user_id')->references('id')->on('users');
+			$table->foreign('from_user_id')->references('id')->on('users');
+			$table->foreign('to_user_id')->references('id')->on('users');
 		});
 	}
 

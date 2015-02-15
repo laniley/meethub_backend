@@ -72,7 +72,7 @@ class MeethubController extends \BaseController {
 		$short_description = Input::get('meethub.short_description');
 
 		$founder_id = Input::get('meethub.founder');
-		$members_arr = Input::get('meethub.members');
+		// $members_arr = Input::get('meethub.members');
 
 		// test the DB-Connection
 		try
@@ -97,18 +97,19 @@ class MeethubController extends \BaseController {
 		    		)
 				);
 
-		for($i = 0; $i < count($members_arr); $i++)
-		{
+		// for($i = 0; $i < count($members_arr); $i++)
+		// {
 			DB::table('mm_users_meethubs')
 			->insert(
 		    	array(
-		    			'user_id' => $members_arr[$i],
+		    			'user_id' => $founder_id,
 		    			'meethub_id' => $id,
+		    			'status' => 'accepted',
 		    			'created_at' => $date,
 		    			'updated_at' => $date
 		    		)
 				);
-		}
+		// }
 
 	   $meethub = Meethub::findOrFail($id);
 

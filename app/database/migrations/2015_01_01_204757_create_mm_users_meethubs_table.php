@@ -14,9 +14,14 @@ class CreateMmUsersMeethubsTable extends Migration {
 	{
 		Schema::create('mm_users_meethubs', function(Blueprint $table)
 		{
-			$table->string('user_id');
-			$table->string('meethub_id');
+			$table->integer('user_id')->unsigned();
+			$table->integer('meethub_id')->unsigned();
+			$table->integer('message_id')->unsigned()->nullable();
+			$table->string('status')->default('pending');
 			$table->timestamps();
+
+			$table->foreign('user_id')->references('id')->on('users');
+			$table->foreign('meethub_id')->references('id')->on('meethubs');
 		});
 	}
 
