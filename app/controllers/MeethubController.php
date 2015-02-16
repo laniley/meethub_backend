@@ -134,8 +134,8 @@ class MeethubController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$subject = Input::get('message.subject');
-		$hasBeenRead = Input::get('message.hasBeenRead');
+		$name = Input::get('meethub.name');
+		$short_description = Input::get('meethub.short_description');
 
 		// test the DB-Connection
 		try
@@ -147,30 +147,30 @@ class MeethubController extends \BaseController {
 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
 	   }
 
-	   // check if message already exists
-	   $message = DB::table('messages')->where('id', $id)->first();
+	   // check if meethub already exists
+	   $meethub = DB::table('meethubs')->where('id', $id)->first();
 
 	   $date = new \DateTime;
 
-	 	// update message - because it already exists
-	 	if($message)
+	 	// update meethub - because it already exists
+	 	if($meethub)
 	 	{
-	 		$id = $message->id;
+	 		$id = $meethub->id;
 
-	 		DB::table('messages')
+	 		DB::table('meethubs')
             ->where('id', $id)
             ->update(
             	array(
-            			'subject' => $subject,
-            			'hasBeenRead' => $hasBeenRead,
+            			'name' => $name,
+            			'short_description' => $short_description,
             			'updated_at' => $date
             		)
             	);
 	 	}
 
-	   $message = Message::findOrFail($id);
+	   $meethub = Meethub::findOrFail($id);
 
-	   return '{ "message":'.$message.' }';
+	   return '{ "meethub":'.$meethub.' }';
 	}
 
 
