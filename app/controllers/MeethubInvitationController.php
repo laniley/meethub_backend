@@ -177,6 +177,7 @@ class MeethubInvitationController extends \BaseController {
 		$to_id = Input::get('meethubInvitation.invited_user');
 		$meethub_id = Input::get('meethubInvitation.meethub');
 		$status = Input::get('meethubInvitation.status');
+		$role = Input::get('meethubInvitation.role');
 
 		// test the DB-Connection
 		try
@@ -201,6 +202,7 @@ class MeethubInvitationController extends \BaseController {
             ->update(
             	array(
             			'status' => $status,
+            			'role' => $role,
             			'updated_at' => $date
             		)
             	);
