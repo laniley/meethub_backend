@@ -33,9 +33,13 @@ class MessageController extends \BaseController {
 
 		   if($eventInvitation)
 		   	$message["eventInvitation"] = $eventInvitation->id;
+		   else
+		   	$message["eventInvitation"] = null;
 
 		   if($meethubInvitation)
 		   	$message["meethubInvitation"] = $meethubInvitation->id;
+		   else
+		   	$message["meethubInvitation"] = null;
 		}
 
 	   return '{ "messages": '.$messages.' }';

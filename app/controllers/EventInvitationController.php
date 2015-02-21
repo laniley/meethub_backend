@@ -134,7 +134,15 @@ class EventInvitationController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		//
+		$eventInvitation = EventInvitation::findOrFail($id);
+
+		$eventInvitation["invited_user"] = $eventInvitation->user_id;
+		$eventInvitation["event"] = $eventInvitation->event_id;
+		$eventInvitation["message"] = $eventInvitation->message_id;
+
+		$event = myEvent::find($eventInvitation->event_id);
+	   
+	   return '{"eventInvitation":'.$eventInvitation.', "events": ['.$event.'] }';
 	}
 
 

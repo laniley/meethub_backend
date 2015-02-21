@@ -15,6 +15,8 @@ class myEvent extends Eloquent {
 	 *
 	 * @var array
 	 */
+	protected $hidden = array('location_id');
+
 	public function location()
  	{
      	return $this->belongsTo('Location');

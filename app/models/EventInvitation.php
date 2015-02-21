@@ -15,6 +15,8 @@ class EventInvitation extends Eloquent {
 	 *
 	 * @var array
 	 */
+	protected $hidden = array('event_id', 'user_id', 'message_id');
+	
 	public function event()
  	{
      	return $this->belongsTo('myEvent');
