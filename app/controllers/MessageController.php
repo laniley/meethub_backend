@@ -22,13 +22,20 @@ class MessageController extends \BaseController {
 	   }
 
 	   $messages = Message::where('to_user_id', '=', $user_id)->get();
-	   // $messages->load('user');
 
 	   foreach ($messages as $message)
 		{
-		   $message["user"] = $message->user_id;
-		   $message["eventInvitation"] = $message->eventInvitation_id;
-		   $message["meethubInvitation"] = $message->meethubInvitation_id;
+			$message["from_user"] = $message->from_user_id;
+		   $message["to_user"] = $message->to_user_id;
+
+		   $eventInvitation = DB::table('mm_users_events')->where('message_id', $message->id)->first();
+		   $meethubInvitation = DB::table('mm_users_meethubs')->where('message_id', $message->id)->first();
+
+		   if($eventInvitation)
+		   	$message["eventInvitation"] = $eventInvitation->id;
+
+		   if($meethubInvitation)
+		   	$message["meethubInvitation"] = $meethubInvitation->id;
 		}
 
 	   return '{ "messages": '.$messages.' }';

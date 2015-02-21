@@ -15,7 +15,7 @@ class Message extends Eloquent {
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('user_id');
+	protected $hidden = array('user_id', 'from_user_id', 'to_user_id');
 
 	public function eventInvitation()
  	{

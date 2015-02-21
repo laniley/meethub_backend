@@ -56,7 +56,9 @@ class MeethubInvitationController extends \BaseController {
 		   	array_push($meethubs, $meethub);
 		}
 
-	   return '{ "meethubInvitations": '.$invites.', "messages": ['.implode(',', $messages).'], "meethubs": ['.implode(',', $meethubs).'] }';
+	   return '{ "meethubInvitations": '.$invites.', "meethubs": ['.implode(',', $meethubs).'] }';
+
+	   // return '{ "meethubInvitations": '.$invites.', "messages": ['.implode(',', $messages).'], "meethubs": ['.implode(',', $meethubs).'] }';
 	}
 
 
