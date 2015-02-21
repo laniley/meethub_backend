@@ -171,7 +171,9 @@ class MeethubInvitationController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$status = Input::get('eventInvitation.status');
+		$to_id = Input::get('meethubInvitation.invited_user');
+		$meethub_id = Input::get('meethubInvitation.meethub');
+		$status = Input::get('meethubInvitation.status');
 
 		// test the DB-Connection
 		try
@@ -183,29 +185,27 @@ class MeethubInvitationController extends \BaseController {
 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
 	   }
 
-	   // check if eventInvitation already exists
-	  //  $eventInvitation = DB::table('mm_users_events')->where('id', $id)->first();
+	   // check if meethubInvitation already exists
+	   $meethubInvitation = DB::table('mm_users_meethubs')->where('id', $id)->first();
 
-	  //  $date = new \DateTime;
+	   $date = new \DateTime;
 
-	 	// // update
-	 	// if($eventInvitation)
-	 	// {
-			// $id = $eventInvitation->id;
+	 	// update
+	 	if($meethubInvitation)
+	 	{
+			DB::table('mm_users_meethubs')
+            ->where('id', $id)
+            ->update(
+            	array(
+            			'status' => $status,
+            			'updated_at' => $date
+            		)
+            	);
+	   }
 
-	 	// 	DB::table('mm_users_events')
-   //          ->where('id', $id)
-   //          ->update(
-   //          	array(
-   //          			'status' => $status,
-   //          			'updated_at' => $date
-   //          		)
-   //          	);
-	  //  }
-
-	  //  $eventInvitation = EventInvitation::findOrFail($id);
+	   $meethubInvitation = MeethubMembership::findOrFail($id);
 	   
-	  //  return '{"eventInvitation":'.$eventInvitation.' }';
+	   return '{"meethubInvitation":'.$meethubInvitation.' }';
 	}
 
 
