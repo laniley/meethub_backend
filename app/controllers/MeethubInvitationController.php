@@ -21,39 +21,42 @@ class MeethubInvitationController extends \BaseController {
 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
 	   }
 
-	 //   $invites = EventInvitation::where('user_id', '=', $user_id)->get();
-	 //   $events = [];
-	 //   $users = [];
-	 //   $messages = [];
-	 //   $locations = [];
+	   $invites = MeethubMembership::where('user_id', '=', $user_id)->get();
+	   $meethubs = [];
+	   $messages = [];
 
-	 //   foreach ($invites as $invite)
-		// {
-		//    $invite["event"] = $invite->event_id;
-		//    $invite["invited_user"] = $invite->user_id;
-		//    $invite["message"] = $invite->message_id;
+	   foreach ($invites as $invite)
+		{
+		   $invite["invited_user"] = $invite->user_id;
+		   $invite["message"] = $invite->message_id;
+		   $invite["meethub"] = $invite->meethub_id;
 
-		//    $event = myEvent::find($invite->event_id);
-		//    $event["location"] = $event->location_id;
+		   $message = Message::find($invite->message_id);
 
-		//    $user = User::find($invite->user_id);
-		//    $message = Message::find($invite->message_id);
-		//    $location = Location::find($event->location_id);
+		   $meethub = Meethub::find($invite->meethub_id);
+		   $founder = $meethub->founder_id;
+		   $meethub["founder"] = $founder;
 
-		//    if(!in_array($event, $events))
-		//    	array_push($events, $event);
+		   $memberships_of_meethub = MeethubMembership::where('meethub_id', '=', $invite->meethub_id)->get();
 
-		//    if(!in_array($location, $locations))
-		//    	array_push($locations, $location);
+		   $invitations = [];
 
-		//    if(!in_array($user, $users))
-		//    	array_push($users, $user);
+		   foreach ($memberships_of_meethub as $membership_of_meethub)
+			{
+				if(!in_array($membership_of_meethub->id, $invitations))
+					array_push($invitations, $membership_of_meethub->id);
+			}
+
+			$meethub["invitations"] = $invitations;
 		   
-		//    if(!in_array($message, $messages))
-		//    	array_push($messages, $message);
-		// }
+		   if(!in_array($message, $messages))
+		   	array_push($messages, $message);
 
-	 //   return '{ "eventInvitations": '.$invites.', "events": ['.implode(',', $events).'], "invited_users": ['.implode(',', $users).'], "messages": ['.implode(',', $messages).'], "locations": ['.implode(',', $locations).'] }';
+		   if(!in_array($meethub, $meethubs))
+		   	array_push($meethubs, $meethub);
+		}
+
+	   return '{ "meethubInvitations": '.$invites.', "messages": ['.implode(',', $messages).'], "meethubs": ['.implode(',', $meethubs).'] }';
 	}
 
 
