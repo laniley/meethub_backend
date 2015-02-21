@@ -49,7 +49,7 @@ class MeethubInvitationController extends \BaseController {
 
 			$meethub["invitations"] = $invitations;
 		   
-		   if(!in_array($message, $messages))
+		   if($message && !in_array($message, $messages))
 		   	array_push($messages, $message);
 
 		   if(!in_array($meethub, $meethubs))
@@ -81,6 +81,7 @@ class MeethubInvitationController extends \BaseController {
 		$to_id = Input::get('meethubInvitation.invited_user');
 		$meethub_id = Input::get('meethubInvitation.meethub');
 		$message_id = Input::get('meethubInvitation.message');
+		$role = Input::get('meethubInvitation.role');
 		$status = Input::get('meethubInvitation.status');
 
 		// test the DB-Connection
@@ -101,11 +102,12 @@ class MeethubInvitationController extends \BaseController {
 
 	   $date = new \DateTime;
 
-	 	// insert
+	 	// get
 	 	if($meethubInvitation)
 	 	{
 	 		$meethubInvitation = MeethubMembership::findOrFail($meethubInvitation->id);
 	 	}
+	 	// insert
 	 	else
 	 	{
 			$id = DB::table('mm_users_meethubs')
@@ -115,6 +117,7 @@ class MeethubInvitationController extends \BaseController {
 			    			'meethub_id' => $meethub_id,
 			    			'message_id' => $message_id,
 			    			'status' => $status,
+			    			'role' => $role,
 			    			'created_at' => $date,
 			    			'updated_at' => $date
 			    		)
