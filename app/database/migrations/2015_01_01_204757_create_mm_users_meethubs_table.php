@@ -18,6 +18,7 @@ class CreateMmUsersMeethubsTable extends Migration {
 			$table->integer('user_id')->unsigned();
 			$table->integer('meethub_id')->unsigned();
 			$table->integer('message_id')->unsigned()->nullable();
+			$table->string('role')->default('standard');
 			$table->string('status')->default('pending');
 			$table->timestamps();
 

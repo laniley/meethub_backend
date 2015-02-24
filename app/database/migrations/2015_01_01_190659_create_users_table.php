@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration {
 			$table->string('picture')->nullable();
 			$table->string('gender')->nullable();
 			$table->string('locale', 2)->nullable();
+			$table->boolean('first_login')->default(true);
 			$table->timestamps();
 		});
 	}

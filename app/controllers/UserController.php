@@ -28,6 +28,10 @@ class UserController extends \BaseController {
 
 	   	foreach($users as $user)
 	   	{
+	   		$user->first_login = false;
+
+			   $user->save();
+
 	   		$friendships = DB::table('friendships')
 				->where('user_id', '=', $user->id)
 		      ->orWhere('friend_id', '=', $user->id)
@@ -118,6 +122,7 @@ class UserController extends \BaseController {
             ->update(
             	array(
             			'picture' => $picture,
+            			'first_login' => false,
             			'updated_at' => $date
             		)
             	);
@@ -242,6 +247,7 @@ class UserController extends \BaseController {
 	   $user->last_name = $last_name;
 	   $user->picture = $picture;
 	   $user->gender = $gender;
+	   $user->first_login = false;
 
 	   $user->save();
 
@@ -265,36 +271,6 @@ class UserController extends \BaseController {
 					);
 	   	}
 	   }
-
-	   // $friendships = DB::table('friendships')
-				// ->where('user_id', '=', $id)
-		  //     ->orWhere('friend_id', '=', $id)
-		  //     ->get();
-
-		// $friend_ids = [];
-		// $friends = [];
-
-  //     foreach($friendships as $friendship_object)
-	 //   {
-	 //   	$friendship = (array)$friendship_object;
-
-	 //   	$friend_id = null;
-	   	
-	 //   	if($friendship["user_id"] != $id)
-	 //   		$friend_id = $friendship["user_id"];
-	 //   	else
-	 //   		$friend_id = $friendship["friend_id"];
-
-	 //   	array_push($friend_ids, $friend_id);
-
-	 //   	$friend = User::findOrFail($friend_id);
-
-	 //   	array_push($friends, $friend);
-	 //   }
-
-	 //   $user["friends"] = $friend_ids;
-
-	   // return '{"user":'.$user.', "friends": ['.implode(',', $friends).'] }';
 
 	   return '{"user":'.$user.' }';
 	}
