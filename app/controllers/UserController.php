@@ -93,6 +93,7 @@ class UserController extends \BaseController {
 		$picture = Input::get('user.picture');
 		$gender = Input::get('user.gender');
 		$friends = Input::get('user.friends');
+		$user = Input::get('user.last_login');
 
 		// test the DB-Connection
 		try
@@ -123,6 +124,7 @@ class UserController extends \BaseController {
             	array(
             			'picture' => $picture,
             			'first_login' => false,
+            			'last_login' => $last_login,
             			'updated_at' => $date
             		)
             	);
@@ -137,6 +139,7 @@ class UserController extends \BaseController {
 			    			'last_name' => $last_name,
 			    			'gender' => $gender,
 			    			'picture' => $picture,
+			    			'last_login' => $last_login,
 			    			'created_at' => $date,
 			    			'updated_at' => $date
 			    		)
@@ -227,6 +230,7 @@ class UserController extends \BaseController {
 		$picture = Input::get('user.picture');
 		$gender = Input::get('user.gender');
 		$friends = Input::get('user.friends');
+		$last_login = Input::get('user.last_login');
 
 		// test the DB-Connection
 		try
@@ -248,6 +252,7 @@ class UserController extends \BaseController {
 	   $user->picture = $picture;
 	   $user->gender = $gender;
 	   $user->first_login = false;
+	   $user->last_login = $last_login;
 
 	   $user->save();
 

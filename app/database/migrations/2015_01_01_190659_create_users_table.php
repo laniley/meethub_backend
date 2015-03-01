@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration {
 			$table->string('gender')->nullable();
 			$table->string('locale', 2)->nullable();
 			$table->boolean('first_login')->default(true);
+			$table->dateTime('last_login')->default('0000-00-00 00:00:00');
 			$table->timestamps();
 		});
 	}
