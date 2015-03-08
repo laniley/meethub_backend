@@ -93,7 +93,12 @@ class UserController extends \BaseController {
 		$picture = Input::get('user.picture');
 		$gender = Input::get('user.gender');
 		$friends = Input::get('user.friends');
-		$user = Input::get('user.last_login');
+		$last_login = Input::get('user.last_login');
+
+		if($last_login == null)
+		{
+			$last_login = '0000-00-00 00:00:00';
+		}
 
 		// test the DB-Connection
 		try
