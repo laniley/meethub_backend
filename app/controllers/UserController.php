@@ -28,9 +28,9 @@ class UserController extends \BaseController {
 
 	   	foreach($users as $user)
 	   	{
-	   		$user->first_login = false;
+	   		// $user->first_login = false;
 
-			   $user->save();
+			   // $user->save();
 
 	   		$friendships = DB::table('friendships')
 				->where('user_id', '=', $user->id)
@@ -93,6 +93,7 @@ class UserController extends \BaseController {
 		$picture = Input::get('user.picture');
 		$gender = Input::get('user.gender');
 		$friends = Input::get('user.friends');
+		$first_login = Input::get('user.first_login');
 		$last_login = Input::get('user.last_login');
 
 		if($last_login == null)
@@ -119,22 +120,7 @@ class UserController extends \BaseController {
 	   $date = new \DateTime;
 
 	   // save login
-	   if($user) // update user
-	   {
-	   	$id = $user->id;
-
-	   	DB::table('users')
-            ->where('id', $id)
-            ->update(
-            	array(
-            			'picture' => $picture,
-            			'first_login' => false,
-            			'last_login' => $last_login,
-            			'updated_at' => $date
-            		)
-            	);
-	   }
-	   else // insert user
+	   if(!$user) // insert user
 	   {
 			$id = DB::table('users')
 				->insertGetId(
@@ -144,6 +130,7 @@ class UserController extends \BaseController {
 			    			'last_name' => $last_name,
 			    			'gender' => $gender,
 			    			'picture' => $picture,
+			    			'first_login' => $first_login,
 			    			'last_login' => $last_login,
 			    			'created_at' => $date,
 			    			'updated_at' => $date
@@ -191,7 +178,7 @@ class UserController extends \BaseController {
 
 	   $user["friends"] = $friend_ids;
 
-	   return '{"user":'.$user.', "friends": ['.implode(',', $friends).'] }';
+	   return '{"user":'.$user.', "users": ['.implode(',', $friends).'] }';
 	}
 
 
@@ -235,6 +222,7 @@ class UserController extends \BaseController {
 		$picture = Input::get('user.picture');
 		$gender = Input::get('user.gender');
 		$friends = Input::get('user.friends');
+		$first_login = Input::get('user.first_login');
 		$last_login = Input::get('user.last_login');
 
 		// test the DB-Connection
@@ -256,7 +244,7 @@ class UserController extends \BaseController {
 	   $user->last_name = $last_name;
 	   $user->picture = $picture;
 	   $user->gender = $gender;
-	   $user->first_login = false;
+	   $user->first_login = $first_login;
 	   $user->last_login = $last_login;
 
 	   $user->save();
