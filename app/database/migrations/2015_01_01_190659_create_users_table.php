@@ -23,7 +23,8 @@ class CreateUsersTable extends Migration {
 			$table->string('locale', 2)->nullable();
 			$table->boolean('first_login')->default(true);
 			$table->dateTime('last_login')->default('0000-00-00 00:00:00');
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
 		});
 	}
 

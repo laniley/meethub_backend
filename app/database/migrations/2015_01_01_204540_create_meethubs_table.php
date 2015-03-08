@@ -18,7 +18,8 @@ class CreateMeethubsTable extends Migration {
 			$table->string('name');
 			$table->string('short_description')->nullable();
 			$table->integer('founder_id')->unsigned();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
 
 			$table->foreign('founder_id')->references('id')->on('users');
 		});

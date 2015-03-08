@@ -21,7 +21,8 @@ class CreateMessagesTable extends Migration {
 			$table->string('subject');
 			$table->string('text')->nullable();
 			$table->boolean('hasBeenRead')->default(false);
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
 
 			$table->foreign('from_user_id')->references('id')->on('users');
 			$table->foreign('to_user_id')->references('id')->on('users');

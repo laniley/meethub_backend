@@ -22,7 +22,8 @@ class CreateEventsTable extends Migration {
 			$table->time('start_time');
 			$table->date('start_date');
 			$table->integer('location_id')->unsigned()->nullable();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
 
 			$table->foreign('location_id')->references('id')->on('locations');
 		});

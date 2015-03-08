@@ -19,7 +19,8 @@ class CreateMmUsersEventsTable extends Migration {
 			$table->integer('user_id')->unsigned();
 			$table->integer('message_id')->unsigned();
 			$table->string('status');
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
 
 			$table->unique(array('event_id', 'user_id'));
 			$table->foreign('event_id')->references('id')->on('events');
