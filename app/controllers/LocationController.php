@@ -162,7 +162,16 @@ class LocationController extends \BaseController {
 	 	}
 	 	else
 	 	{
-	 		return 'null';
+	 		$location = Location::findOrFail($id);
+
+	 		if($location)
+	 		{
+	 			return '{"location":'.$location.'}';
+	 		}
+	 		else
+	 		{
+	 			return 'null';
+	 		}
 	 	}
 	}
 
