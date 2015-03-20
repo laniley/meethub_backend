@@ -23,6 +23,11 @@ class EventController extends \BaseController {
 	   // check if event already exists
    	$events = myEvent::where('fb_id', '=', $fb_id)->get();
 
+   	foreach ($event as $events)
+		{
+		   $event["location"] = $event->location_id;
+		}
+
 	   return '{"events":'.$events.'}';
 	}
 
@@ -157,6 +162,8 @@ class EventController extends \BaseController {
 
 	   // check if event already exists
    	$event = myEvent::findOrFail($id);
+
+   	$event["location"] = $event->location_id;
 
 	   return '{"event":'.$event.'}';
 	}
