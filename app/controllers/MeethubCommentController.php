@@ -36,43 +36,19 @@ class MeethubCommentController extends \BaseController {
 		{
 			$comments_of_meethub = MeethubComment::where('meethub_id', '=', $meethub)->get();
 
-			array_push($comments, $comments_of_meethub);
+			foreach ($comments_of_meethub as $comment_of_meethub)
+			{
+				array_push($comments, $comment_of_meethub);
+			}
 		}
 
-// 	   foreach ($invites as $invite)
-// 		{
-// 		   $invite["invited_user"] = $invite->user_id;
-// 		   $invite["message"] = $invite->message_id;
-// 		   $invite["meethub"] = $invite->meethub_id;
+	   foreach ($comments as $comment)
+		{
+		   $comment["author"] = $comment->user_id;
+		   $comment["meethub"] = $comment->meethub_id;
+		}
 
-// 		   $message = Message::find($invite->message_id);
-
-// 		   $meethub = Meethub::find($invite->meethub_id);
-// 		   $founder = $meethub->founder_id;
-// 		   $meethub["founder"] = $founder;
-
-// 		   $memberships_of_meethub = MeethubMembership::where('meethub_id', '=', $invite->meethub_id)->get();
-
-// 		   $invitations = [];
-
-// 		   foreach ($memberships_of_meethub as $membership_of_meethub)
-// 			{
-// 				if(!in_array($membership_of_meethub->id, $invitations))
-// 					array_push($invitations, $membership_of_meethub->id);
-// 			}
-
-// 			$meethub["invitations"] = $invitations;
-		   
-// 		   if($message && !in_array($message, $messages))
-// 		   	array_push($messages, $message);
-
-// 		   if(!in_array($meethub, $meethubs))
-// 		   	array_push($meethubs, $meethub);
-// 		}
-
-// 	   return '{ "meethubInvitations": '.$invites.', "meethubs": ['.implode(',', $meethubs).'] }';
-
-	   return '{ "meethubComments": '.implode(',', $comments).' }';
+	   return '{ "meethubComments": ['.implode(',', $comments).'] }';
 	}
 
 
