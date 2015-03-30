@@ -24,14 +24,10 @@ class UserController extends \BaseController {
 	   	$fb_id = Input::get('fb_id');
 
 	   	$users = User::where('fb_id', '=', $fb_id)->get();
-	   	// return DB::getQueryLog();
 
 	   	foreach($users as $user)
 	   	{
-	   		// $user->first_login = false;
-
-			   // $user->save();
-
+	   		// FRIENDS
 	   		$friendships = DB::table('friendships')
 				->where('user_id', '=', $user->id)
 		      ->orWhere('friend_id', '=', $user->id)
@@ -59,9 +55,40 @@ class UserController extends \BaseController {
 			   }
 
 			   $user["friends"] = $friend_ids;
+
+			   // MEETHUB-COMMENTS
+			   $meethubs = [];
+	   		$comments = [];
+
+			   $meethubMemberships_of_user = DB::table('mm_users_meethubs')
+				->where('user_id', '=', $user->id)
+		      ->get();
+
+			   foreach ($meethubMemberships_of_user as $membership_object)
+				{
+					$membership = (array)$membership_object;
+
+					if(!in_array($membership["meethub_id"], $meethubs))
+						array_push($meethubs, $membership["meethub_id"]);
+				}
+
+				foreach ($meethubs as $meethub)
+				{
+					$comments_of_meethub = DB::table('meethub_comments')
+					->where('meethub_id', '=', $meethub)
+			      ->get();
+
+					foreach ($comments_of_meethub as $comment_of_meethub_object)
+					{	
+						$comment_of_meethub = (array)$comment_of_meethub_object;
+
+						array_push($comments, $comment_of_meethub["id"]);
+					}
+				}
+
+				$user["meethubComments"] = $comments;
 		   }
 
-		   // return '{"user":'.$user.', "friends": ['.implode(',', $friends).'] }';
 		   return '{ "users": '.$users.' }';
 	   }
 	   else
@@ -192,6 +219,38 @@ class UserController extends \BaseController {
 	{
 	   $user = User::findOrFail($id);
 
+	   // MEETHUB-COMMENTS
+	   $meethubs = [];
+		$comments = [];
+
+	   $meethubMemberships_of_user = DB::table('mm_users_meethubs')
+		->where('user_id', '=', $id)
+      ->get();
+
+	   foreach ($meethubMemberships_of_user as $membership_object)
+		{
+			$membership = (array)$membership_object;
+
+			if(!in_array($membership["meethub_id"], $meethubs))
+				array_push($meethubs, $membership["meethub_id"]);
+		}
+
+		foreach ($meethubs as $meethub)
+		{
+			$comments_of_meethub = DB::table('meethub_comments')
+			->where('meethub_id', '=', $meethub)
+	      ->get();
+
+			foreach ($comments_of_meethub as $comment_of_meethub_object)
+			{	
+				$comment_of_meethub = (array)$comment_of_meethub_object;
+
+				array_push($comments, $comment_of_meethub["id"]);
+			}
+		}
+
+		$user["meethubComments"] = $comments;
+
 	   return '{ "user":'.$user.' }';
 	}
 
@@ -255,7 +314,6 @@ class UserController extends \BaseController {
 				->where(DB::raw(' ( user_id = '.$id.' AND friend_id = '.$friend.' ) OR ( user_id = '.$friend.' AND friend_id = '.$id.' ) '))
 		      ->get();
 
-		   // return DB::getQueryLog();
 		   if(count($friendships) === 0)
 	   	{
 	   		DB::table('friendships')
@@ -269,6 +327,38 @@ class UserController extends \BaseController {
 					);
 	   	}
 	   }
+
+	   // MEETHUB-COMMENTS
+	   $meethubs = [];
+		$comments = [];
+
+	   $meethubMemberships_of_user = DB::table('mm_users_meethubs')
+		->where('user_id', '=', $user->id)
+      ->get();
+
+	   foreach ($meethubMemberships_of_user as $membership_object)
+		{
+			$membership = (array)$membership_object;
+
+			if(!in_array($membership["meethub_id"], $meethubs))
+				array_push($meethubs, $membership["meethub_id"]);
+		}
+
+		foreach ($meethubs as $meethub)
+		{
+			$comments_of_meethub = DB::table('meethub_comments')
+			->where('meethub_id', '=', $meethub)
+	      ->get();
+
+			foreach ($comments_of_meethub as $comment_of_meethub_object)
+			{	
+				$comment_of_meethub = (array)$comment_of_meethub_object;
+
+				array_push($comments, $comment_of_meethub["id"]);
+			}
+		}
+
+		$user["meethubComments"] = $comments;
 
 	   return '{"user":'.$user.' }';
 	}

@@ -84,65 +84,49 @@ class MeethubCommentController extends \BaseController {
 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
 	   }
 
-	   // check if meethubComment already exists
-	   $meethubComment = DB::table('meethub_comments')
-	   	->where('user_id', $user_id)
-	   	->where('meethub_id', $meethub_id)
-	   	->first();
-
 	   $date = new \DateTime;
 
-	 	// get
-	 	if($meethubComment)
-	 	{
-	 		$meethubComment = MeethubComment::findOrFail($meethubComment->id);
-	 	}
-	 	// insert
-	 	else
-	 	{
-			$id = DB::table('meethub_comments')
-				->insertGetId(
-			    	array(
-			    			'user_id' => $user_id,
-			    			'meethub_id' => $meethub_id,
-			    			'text' => $text,
-			    			'created_at' => $date,
-			    			'updated_at' => $date
-			    		)
-					);
+		$id = DB::table('meethub_comments')
+			->insertGetId(
+		    	array(
+		    			'user_id' => $user_id,
+		    			'meethub_id' => $meethub_id,
+		    			'text' => $text,
+		    			'created_at' => $date,
+		    			'updated_at' => $date
+		    		)
+				);
 
-			$meethubComment = MeethubComment::findOrFail($id);
-	   }
+		$meethubComment = MeethubComment::findOrFail($id);
 
 	   return '{"meethubComment":'.$meethubComment.' }';
 	}
 
 
-// 	/**
-// 	 * Display the specified resource.
-// 	 *
-// 	 * @param  int  $id
-// 	 * @return Response
-// 	 */
-// 	public function show($id)
-// 	{
-// 		// test the DB-Connection
-// 		try
-// 	   {
-// 	      $pdo = DB::connection('mysql')->getPdo();
-// 	   }
-// 	   catch(PDOException $exception)
-// 	   {
-// 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
-// 	   }
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function show($id)
+	{
+		// test the DB-Connection
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
 
-// 	   $invitation = MeethubMembership::findOrFail($id);
-// 	   $invitation["invited_user"] = $invitation["user_id"];
-// 	   $invitation["meethub"] = $invitation["meethub_id"];
-// 	   $invitation["message"] = $invitation["message_id"];
+	   $comment = MeethubComment::findOrFail($id);
+	   $comment["author"] = $comment["user_id"];
+	   $comment["meethub"] = $comment["meethub_id"];
 	   
-// 	   return '{ "meethub-invitation":'.$invitation.' }';
-// 	}
+	   return '{ "meethub-comment":'.$invitation.' }';
+	}
 
 
 	/**
