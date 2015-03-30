@@ -20,7 +20,10 @@ Route::resource('friends', 'FriendshipController');
 Route::resource('events', 'EventController');
 
 Route::resource('eventInvitations', 'EventInvitationController');
+
 Route::resource('meethubInvitations', 'MeethubInvitationController');
+
+Route::resource('meethubComments', 'MeethubCommentController');
 
 Route::resource('locations', 'LocationController');
 

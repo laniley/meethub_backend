@@ -1,0 +1,244 @@
+<?php
+
+class MeethubCommentController extends \BaseController {
+
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return Response
+	 */
+	public function index()
+	{
+		$user_id = Input::get('user');
+
+		// test the DB-Connection
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
+
+	   $meethubs = [];
+	   $comments = [];
+
+	   $meethubMemberships_of_user = MeethubMembership::where('user_id', '=', $user_id)->get();
+
+	   foreach ($meethubMemberships_of_user as $membership)
+		{
+			if(!in_array($membership->meethub_id, $meethubs))
+				array_push($meethubs, $membership->meethub_id);
+		}
+
+	   foreach ($meethubs as $meethub)
+		{
+			$comments_of_meethub = MeethubComment::where('meethub_id', '=', $meethub)->get();
+
+			array_push($comments, $comments_of_meethub);
+		}
+
+// 	   foreach ($invites as $invite)
+// 		{
+// 		   $invite["invited_user"] = $invite->user_id;
+// 		   $invite["message"] = $invite->message_id;
+// 		   $invite["meethub"] = $invite->meethub_id;
+
+// 		   $message = Message::find($invite->message_id);
+
+// 		   $meethub = Meethub::find($invite->meethub_id);
+// 		   $founder = $meethub->founder_id;
+// 		   $meethub["founder"] = $founder;
+
+// 		   $memberships_of_meethub = MeethubMembership::where('meethub_id', '=', $invite->meethub_id)->get();
+
+// 		   $invitations = [];
+
+// 		   foreach ($memberships_of_meethub as $membership_of_meethub)
+// 			{
+// 				if(!in_array($membership_of_meethub->id, $invitations))
+// 					array_push($invitations, $membership_of_meethub->id);
+// 			}
+
+// 			$meethub["invitations"] = $invitations;
+		   
+// 		   if($message && !in_array($message, $messages))
+// 		   	array_push($messages, $message);
+
+// 		   if(!in_array($meethub, $meethubs))
+// 		   	array_push($meethubs, $meethub);
+// 		}
+
+// 	   return '{ "meethubInvitations": '.$invites.', "meethubs": ['.implode(',', $meethubs).'] }';
+
+	   return '{ "meethubComments": '.implode(',', $comments).' }';
+	}
+
+
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return Response
+	 */
+	public function create()
+	{
+		//
+	}
+
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @return Response
+	 */
+	public function store()
+	{
+		$user_id = Input::get('meethubComment.author');
+		$meethub_id = Input::get('meethubComment.meethub');
+		$text = Input::get('meethubComment.text');
+
+		// test the DB-Connection
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
+
+	   // check if meethubComment already exists
+	   $meethubComment = DB::table('meethub_comments')
+	   	->where('user_id', $user_id)
+	   	->where('meethub_id', $meethub_id)
+	   	->first();
+
+	   $date = new \DateTime;
+
+	 	// get
+	 	if($meethubComment)
+	 	{
+	 		$meethubComment = MeethubComment::findOrFail($meethubComment->id);
+	 	}
+	 	// insert
+	 	else
+	 	{
+			$id = DB::table('meethub_comments')
+				->insertGetId(
+			    	array(
+			    			'user_id' => $user_id,
+			    			'meethub_id' => $meethub_id,
+			    			'text' => $text,
+			    			'created_at' => $date,
+			    			'updated_at' => $date
+			    		)
+					);
+
+			$meethubComment = MeethubComment::findOrFail($id);
+	   }
+
+	   return '{"meethubComment":'.$meethubComment.' }';
+	}
+
+
+// 	/**
+// 	 * Display the specified resource.
+// 	 *
+// 	 * @param  int  $id
+// 	 * @return Response
+// 	 */
+// 	public function show($id)
+// 	{
+// 		// test the DB-Connection
+// 		try
+// 	   {
+// 	      $pdo = DB::connection('mysql')->getPdo();
+// 	   }
+// 	   catch(PDOException $exception)
+// 	   {
+// 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+// 	   }
+
+// 	   $invitation = MeethubMembership::findOrFail($id);
+// 	   $invitation["invited_user"] = $invitation["user_id"];
+// 	   $invitation["meethub"] = $invitation["meethub_id"];
+// 	   $invitation["message"] = $invitation["message_id"];
+	   
+// 	   return '{ "meethub-invitation":'.$invitation.' }';
+// 	}
+
+
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function edit($id)
+	{
+		//
+	}
+
+
+// 	/**
+// 	 * Update the specified resource in storage.
+// 	 *
+// 	 * @param  int  $id
+// 	 * @return Response
+// 	 */
+// 	public function update($id)
+// 	{
+// 		$to_id = Input::get('meethubInvitation.invited_user');
+// 		$meethub_id = Input::get('meethubInvitation.meethub');
+// 		$status = Input::get('meethubInvitation.status');
+// 		$role = Input::get('meethubInvitation.role');
+
+// 		// test the DB-Connection
+// 		try
+// 	   {
+// 	      $pdo = DB::connection('mysql')->getPdo();
+// 	   }
+// 	   catch(PDOException $exception)
+// 	   {
+// 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+// 	   }
+
+// 	   // check if meethubInvitation already exists
+// 	   $meethubInvitation = DB::table('mm_users_meethubs')->where('id', $id)->first();
+
+// 	   $date = new \DateTime;
+
+// 	 	// update
+// 	 	if($meethubInvitation)
+// 	 	{
+// 			DB::table('mm_users_meethubs')
+//             ->where('id', $id)
+//             ->update(
+//             	array(
+//             			'status' => $status,
+//             			'role' => $role,
+//             			'updated_at' => $date
+//             		)
+//             	);
+// 	   }
+
+// 	   $meethubInvitation = MeethubMembership::findOrFail($id);
+	   
+// 	   return '{"meethubInvitation":'.$meethubInvitation.' }';
+// 	}
+
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function destroy($id)
+	{
+		//
+	}
+
+
+}

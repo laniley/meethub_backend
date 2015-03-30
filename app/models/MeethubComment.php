@@ -1,22 +1,22 @@
 <?php
 
-class MeethubMembership extends Eloquent {
+class MeethubComment extends Eloquent {
 
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table = 'mm_users_meethubs';
+	protected $table = 'meethub_comments';
 
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('user_id', 'meethub_id', 'message_id', 'created_at', 'updated_at');
+	protected $hidden = array('user_id', 'meethub_id', 'created_at', 'updated_at');
 
-	public function user()
+	public function author()
  	{
      	return $this->belongsTo('User');
  	}
