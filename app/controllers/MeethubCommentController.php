@@ -125,7 +125,7 @@ class MeethubCommentController extends \BaseController {
 	   $comment["author"] = $comment["user_id"];
 	   $comment["meethub"] = $comment["meethub_id"];
 	   
-	   return '{ "meethub-comment":'.$invitation.' }';
+	   return '{ "meethub-comment":'.$comment.' }';
 	}
 
 
