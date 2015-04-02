@@ -14,7 +14,7 @@ class MeethubComment extends Eloquent {
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('user_id', 'meethub_id', 'created_at', 'updated_at');
+	protected $hidden = array('user_id', 'meethub_id', 'updated_at');
 
 	public function author()
  	{

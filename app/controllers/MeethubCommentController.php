@@ -11,6 +11,8 @@ class MeethubCommentController extends \BaseController {
 	{
 		$user_id = Input::get('user');
 
+		$user = User::findOrFail($user_id);
+
 		// test the DB-Connection
 		try
 	   {
@@ -38,6 +40,15 @@ class MeethubCommentController extends \BaseController {
 
 			foreach ($comments_of_meethub as $comment_of_meethub)
 			{
+				if($comment_of_meethub->created_at > $user->last_login)
+				{
+					$comment_of_meethub["isNew"] = true;
+				}
+				else
+				{
+					$comment_of_meethub["isNew"] = false;
+				}
+
 				array_push($comments, $comment_of_meethub);
 			}
 		}
