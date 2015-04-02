@@ -42,11 +42,11 @@ class MeethubCommentController extends \BaseController {
 			{
 				if($comment_of_meethub->created_at > $user->last_login)
 				{
-					$comment_of_meethub["isNew"] = true;
+					$comment_of_meethub["new_comment"] = true;
 				}
 				else
 				{
-					$comment_of_meethub["isNew"] = false;
+					$comment_of_meethub["new_comment"] = false;
 				}
 
 				array_push($comments, $comment_of_meethub);
@@ -133,6 +133,18 @@ class MeethubCommentController extends \BaseController {
 	   }
 
 	   $comment = MeethubComment::findOrFail($id);
+
+	   $user = User::findOrFail($comment->user_id);
+
+	   if($comment->created_at > $user->last_login)
+		{
+			$comment["new_comment"] = true;
+		}
+		else
+		{
+			$comment["new_comment"] = false;
+		}
+
 	   $comment["author"] = $comment["user_id"];
 	   $comment["meethub"] = $comment["meethub_id"];
 	   
