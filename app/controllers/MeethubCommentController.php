@@ -210,7 +210,7 @@ class MeethubCommentController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		MeethubComment::destroy($id);
 	}
 
 
