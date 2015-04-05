@@ -237,15 +237,11 @@ class UserController extends \BaseController {
 
 		foreach ($meethubs as $meethub)
 		{
-			$comments_of_meethub = DB::table('meethub_comments')
-			->where('meethub_id', '=', $meethub)
-	      ->get();
+	      $comments_of_meethub = MeethubComment::where('meethub_id', '=', $meethub)->get();
 
-			foreach ($comments_of_meethub as $comment_of_meethub_object)
+			foreach ($comments_of_meethub as $comment_of_meethub)
 			{	
-				$comment_of_meethub = (array)$comment_of_meethub_object;
-
-				array_push($comments, $comment_of_meethub["id"]);
+				array_push($comments, $comment_of_meethub->id);
 			}
 		}
 
@@ -346,15 +342,11 @@ class UserController extends \BaseController {
 
 		foreach ($meethubs as $meethub)
 		{
-			$comments_of_meethub = DB::table('meethub_comments')
-			->where('meethub_id', '=', $meethub)
-	      ->get();
+	      $comments_of_meethub = MeethubComment::where('meethub_id', '=', $meethub)->get();
 
-			foreach ($comments_of_meethub as $comment_of_meethub_object)
+			foreach ($comments_of_meethub as $comment_of_meethub)
 			{	
-				$comment_of_meethub = (array)$comment_of_meethub_object;
-
-				array_push($comments, $comment_of_meethub["id"]);
+				array_push($comments, $comment_of_meethub->id);
 			}
 		}
 
