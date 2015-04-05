@@ -170,46 +170,36 @@ class MeethubCommentController extends \BaseController {
 // 	 * @param  int  $id
 // 	 * @return Response
 // 	 */
-// 	public function update($id)
-// 	{
-// 		$to_id = Input::get('meethubInvitation.invited_user');
-// 		$meethub_id = Input::get('meethubInvitation.meethub');
-// 		$status = Input::get('meethubInvitation.status');
-// 		$role = Input::get('meethubInvitation.role');
+	public function update($id)
+	{
+		$user_id = Input::get('meethubComment.author');
+		$meethub_id = Input::get('meethubComment.meethub');
+		$text = Input::get('meethubComment.text');
 
-// 		// test the DB-Connection
-// 		try
-// 	   {
-// 	      $pdo = DB::connection('mysql')->getPdo();
-// 	   }
-// 	   catch(PDOException $exception)
-// 	   {
-// 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
-// 	   }
+		// test the DB-Connection
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
 
-// 	   // check if meethubInvitation already exists
-// 	   $meethubInvitation = DB::table('mm_users_meethubs')->where('id', $id)->first();
+	   $date = new \DateTime;
 
-// 	   $date = new \DateTime;
+		DB::table('meethub_comments')
+			->where('id', $id)
+			->update(
+		    	array(
+		    			'text' => $text
+		    		)
+				);
 
-// 	 	// update
-// 	 	if($meethubInvitation)
-// 	 	{
-// 			DB::table('mm_users_meethubs')
-//             ->where('id', $id)
-//             ->update(
-//             	array(
-//             			'status' => $status,
-//             			'role' => $role,
-//             			'updated_at' => $date
-//             		)
-//             	);
-// 	   }
+		$meethubComment = MeethubComment::findOrFail($id);
 
-// 	   $meethubInvitation = MeethubMembership::findOrFail($id);
-	   
-// 	   return '{"meethubInvitation":'.$meethubInvitation.' }';
-// 	}
+	   return '{"meethubComment":'.$meethubComment.' }';
+	}
 
 
 	/**
