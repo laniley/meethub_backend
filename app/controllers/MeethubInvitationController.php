@@ -107,6 +107,19 @@ class MeethubInvitationController extends \BaseController {
 	 	// get
 	 	if($meethubInvitation)
 	 	{
+	 		if($message_id)
+	 		{
+	 			$id = $meethubInvitation->id;
+
+		 		DB::table('mm_users_meethubs')
+	            ->where('id', $id)
+	            ->update(
+	            	array(
+	            			'message_id' => $message_id
+	            		)
+	            	);
+	 		}
+
 	 		$meethubInvitation = MeethubMembership::findOrFail($meethubInvitation->id);
 	 	}
 	 	// insert
@@ -181,6 +194,7 @@ class MeethubInvitationController extends \BaseController {
 	{
 		$to_id = Input::get('meethubInvitation.invited_user');
 		$meethub_id = Input::get('meethubInvitation.meethub');
+		$message_id = Input::get('meethubInvitation.message');
 		$status = Input::get('meethubInvitation.status');
 		$role = Input::get('meethubInvitation.role');
 
@@ -211,6 +225,19 @@ class MeethubInvitationController extends \BaseController {
             			'updated_at' => $date
             		)
             	);
+
+         if($message_id)
+	 		{
+	 			$id = $meethubInvitation->id;
+
+		 		DB::table('mm_users_meethubs')
+	            ->where('id', $id)
+	            ->update(
+	            	array(
+	            			'message_id' => $message_id
+	            		)
+	            	);
+	 		}
 	   }
 
 	   $meethubInvitation = MeethubMembership::findOrFail($id);
