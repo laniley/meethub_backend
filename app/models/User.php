@@ -29,6 +29,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
      	return $this->belongsToMany('Meethub');
  	}
 
+ 	public function name()
+ 	{
+     	return $this->first_name." ".$this->last_name;
+ 	}
+
  	// friendship that I started
 	// function friendsOfMine()
 	// {

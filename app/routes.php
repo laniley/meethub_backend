@@ -28,3 +28,5 @@ Route::resource('meethubComments', 'MeethubCommentController');
 Route::resource('locations', 'LocationController');
 
 Route::resource('messages', 'MessageController');
+
+Route::resource('bugs', 'BugController');
