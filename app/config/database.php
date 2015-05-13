@@ -54,7 +54,7 @@ return array(
 
 		'mysql' => array(
 			'driver'    => 'mysql',
-			'host'      => 'vps168690.ovh.net',
+			'host'      => 'localhost',
 			'database'  => 'meethub',
 			'username'  => 'meethub',
 			'password'  => 'jPpZFKWSqt39d6an',
