@@ -10,23 +10,26 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
+Route::group(['prefix' => 'meethubbe'], function() {
 
-Route::resource('users', 'UserController');
+	Route::resource('users', 'UserController');
 
-Route::resource('meethubs', 'MeethubController');
+	Route::resource('meethubs', 'MeethubController');
 
-Route::resource('friends', 'FriendshipController');
+	Route::resource('friends', 'FriendshipController');
 
-Route::resource('events', 'EventController');
+	Route::resource('events', 'EventController');
 
-Route::resource('eventInvitations', 'EventInvitationController');
+	Route::resource('eventInvitations', 'EventInvitationController');
 
-Route::resource('meethubInvitations', 'MeethubInvitationController');
+	Route::resource('meethubInvitations', 'MeethubInvitationController');
 
-Route::resource('meethubComments', 'MeethubCommentController');
+	Route::resource('meethubComments', 'MeethubCommentController');
 
-Route::resource('locations', 'LocationController');
+	Route::resource('locations', 'LocationController');
 
-Route::resource('messages', 'MessageController');
+	Route::resource('messages', 'MessageController');
 
-Route::resource('bugs', 'BugController');
+	Route::resource('bugs', 'BugController');
+
+});

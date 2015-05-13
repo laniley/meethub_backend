@@ -54,14 +54,25 @@ return array(
 
 		'mysql' => array(
 			'driver'    => 'mysql',
-			'host'      => 'localhost',
+			'host'      => 'vps168690.ovh.net',
 			'database'  => 'meethub',
-			'username'  => 'root',
-			'password'  => '',
+			'username'  => 'meethub',
+			'password'  => 'jPpZFKWSqt39d6an',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
 		),
+
+		// 'mysql' => array(
+		// 	'driver'    => 'mysql',
+		// 	'host'      => 'localhost',
+		// 	'database'  => 'meethub',
+		// 	'username'  => 'root',
+		// 	'password'  => '',
+		// 	'charset'   => 'utf8',
+		// 	'collation' => 'utf8_unicode_ci',
+		// 	'prefix'    => '',
+		// ),
 
 		'pgsql' => array(
 			'driver'   => 'pgsql',
