@@ -10,6 +10,7 @@ class MessageController extends \BaseController {
 	public function index()
 	{
 		$user_id = Input::get('user');
+		$fb_id = Input::get('fb_id');
 
 		// test the DB-Connection
 		try
@@ -21,7 +22,14 @@ class MessageController extends \BaseController {
 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
 	   }
 
-	   $messages = Message::where('to_user_id', '=', $user_id)->get();
+	   if(isset($user_id))
+	   {
+	   	$messages = Message::where('to_user_id', '=', $user_id)->get();
+	   }
+	   else if(isset($fb_id))
+	   {
+	   	$messages = Message::where('fb_id', '=', $fb_id)->get();
+	   }
 
 	   foreach ($messages as $message)
 		{
