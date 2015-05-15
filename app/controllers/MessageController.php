@@ -101,6 +101,7 @@ class MessageController extends \BaseController {
 	   {
 	   	$message = DB::table('messages')
 	   				->where('fb_id', $fb_id)
+	   				->where('to_user_id', $to_user_id)
 	   				->whereNotNull('fb_id')
 	   				->first();
 	   }
