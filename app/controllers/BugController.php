@@ -40,16 +40,16 @@ class BugController extends \BaseController {
 		$status = Input::get('bug.status');
 
 		$body  = "FROM: ".User::find($reported_by)->name()."\r\n \r\n";
-		$body .= $text."\r\n \r\n";
+		$body .= urldecode($text)."\r\n \r\n";
 
 		$body .= $browserCodeName . "\r\n";
       $body .= $browserOfficialName . "\r\n";
       $body .= $browserVersion . "\r\n";
       $body .= $platform . "\r\n";
 
-		Mail::send(['text' => 'emails.blank'], array('msg' => $body), function($message)
+		Mail::send(['text' => 'emails.blank'], array('msg' => $body), function($message) use ($text)
 		{
-		   $message->to("info@meethub.net")->subject('Bugreport - Meethub');
+		   $message->to("info@meethub.net")->subject('Bugreport - Meethub - '.substr($text, 0, 100));
 		});
 
 		// test the DB-Connection
