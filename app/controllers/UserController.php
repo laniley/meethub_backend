@@ -115,6 +115,7 @@ class UserController extends \BaseController {
 	public function store()
 	{
 		$fb_id = Input::get('user.fb_id');
+		$email = Input::get('user.email');
 		$first_name = Input::get('user.first_name');
 		$last_name = Input::get('user.last_name');
 		$picture = Input::get('user.picture');
@@ -153,6 +154,7 @@ class UserController extends \BaseController {
 				->insertGetId(
 			    	array(
 			    			'fb_id' => $fb_id,
+			    			'email' => $email,
 			    			'first_name' => $first_name,
 			    			'last_name' => $last_name,
 			    			'gender' => $gender,
@@ -163,6 +165,18 @@ class UserController extends \BaseController {
 			    			'updated_at' => $date
 			    		)
 					);
+	   }
+	   else
+	   {
+	   	$id = $user->id;
+
+	   	DB::table('users')
+            ->where('id', $id)
+            ->update(
+            	array(
+			    			'email' => $email
+            		)
+            	);
 	   }
 
 	   $user = User::findOrFail($id);
@@ -272,6 +286,7 @@ class UserController extends \BaseController {
 	public function update($id)
 	{
 		$fb_id = Input::get('user.fb_id');
+		$email = Input::get('user.email');
 		$first_name = Input::get('user.first_name');
 		$last_name = Input::get('user.last_name');
 		$picture = Input::get('user.picture');
@@ -295,6 +310,7 @@ class UserController extends \BaseController {
 	   $user = User::findOrFail($id);
 
 	   $user->fb_id = $fb_id;
+	   $user->email = $email;
 	   $user->first_name = $first_name;
 	   $user->last_name = $last_name;
 	   $user->picture = $picture;
