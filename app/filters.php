@@ -15,7 +15,14 @@ App::before(function($request)
 {
     // Enable CORS 
     // In production, replace * with http://yourdomain.com 
-    header("Access-Control-Allow-Origin: http://localhost:4200");
+	$http_origin = $_SERVER['HTTP_ORIGIN'];
+
+	if ($http_origin == "http://localhost:4200" || $http_origin == "http://www.meethub.de" || $http_origin == "https://www.meethub.de" || $http_origin == "http://meethub.de" || $http_origin == "https://meethub.de")
+	{  
+	    header("Access-Control-Allow-Origin: $http_origin");
+	}
+
+    // header("Access-Control-Allow-Origin: http://localhost:4200");
     header('Access-Control-Allow-Credentials: true');
 
     if (Request::getMethod() == "OPTIONS") {
