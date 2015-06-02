@@ -53,7 +53,7 @@ class EventInvitationController extends \BaseController {
 		   	array_push($messages, $message);
 		}
 
-	   return '{ "eventInvitations": '.$invites.', "events": ['.implode(',', $events).'], "invited_users": ['.implode(',', $users).'], "messages": ['.implode(',', $messages).'], "locations": ['.implode(',', $locations).'] }';
+	   return '{ "eventInvitations": '.$invites.', "events": ['.implode(',', $events).'], "messages": ['.implode(',', $messages).'], "locations": ['.implode(',', $locations).'] }';
 	}
 
 
