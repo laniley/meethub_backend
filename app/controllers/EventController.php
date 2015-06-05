@@ -74,7 +74,7 @@ class EventController extends \BaseController {
 	   				->whereNotNull('fb_id')
 	   				->first();
 
-	   $date = new \DateTime;
+	   // $date = new \DateTime;
 
 	 	// save event if not already exists
 	 	if($event)
@@ -89,9 +89,7 @@ class EventController extends \BaseController {
 			    			'description' => $description,
 			    			'start_time' => $start_time,
 			    			'start_date' => $start_date,
-			    			'location_id' => $location_id,
-			    			'created_at' => $date,
-			    			'updated_at' => $date
+			    			'location_id' => $location_id
             		)
             	);
 	 	}
@@ -105,8 +103,7 @@ class EventController extends \BaseController {
 			    			'description' => $description,
 			    			'start_time' => $start_time,
 			    			'start_date' => $start_date,
-			    			'location_id' => $location_id,
-			    			'updated_at' => $date
+			    			'location_id' => $location_id
 			    		)
 					);
 	   }

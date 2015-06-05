@@ -160,9 +160,7 @@ class UserController extends \BaseController {
 			    			'gender' => $gender,
 			    			'picture' => $picture,
 			    			'first_login' => $first_login,
-			    			'last_login' => $last_login,
-			    			'created_at' => $date,
-			    			'updated_at' => $date
+			    			'last_login' => $last_login
 			    		)
 					);
 	   }
@@ -185,9 +183,7 @@ class UserController extends \BaseController {
 	   {
 	   	Friendship::firstOrCreate(array(
 	   		'user_id' => $id,
-	   		'friend_id' => $friend,
-	   		'created_at' => $date,
-			   'updated_at' => $date
+	   		'friend_id' => $friend
 	   	));
 	   }
 
@@ -305,20 +301,22 @@ class UserController extends \BaseController {
 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
 	   }
 
-	   $date = new \DateTime;
+	   DB::table('users')
+            ->where('id', $id)
+            ->update(
+            	array(
+			    			'fb_id' => $fb_id,
+			    			'email' => $email,
+			    			'first_name' => $first_name,
+			    			'last_name' => $last_name,
+			    			'gender' => $gender,
+			    			'picture' => $picture,
+			    			'first_login' => $first_login,
+			    			'last_login' => $last_login
+            		)
+            	);
 
 	   $user = User::findOrFail($id);
-
-	   $user->fb_id = $fb_id;
-	   $user->email = $email;
-	   $user->first_name = $first_name;
-	   $user->last_name = $last_name;
-	   $user->picture = $picture;
-	   $user->gender = $gender;
-	   $user->first_login = $first_login;
-	   $user->last_login = $last_login;
-
-	   $user->save();
 
 	   foreach($friends as $friend)
 	   {
@@ -332,9 +330,7 @@ class UserController extends \BaseController {
 				->insert(
 			    	array(
 			    			'user_id' => $id,
-			    			'friend_id' => $friend,
-			    			'created_at' => $date,
-			    			'updated_at' => $date
+			    			'friend_id' => $friend
 			    		)
 					);
 	   	}
