@@ -124,7 +124,9 @@ class EventController extends \BaseController {
 	 */
 	public function show($id)
 	{
+		$event = myEvent::findOrFail($id);
 
+		return '{ "event":'.$event.' }';
 	}
 
 
