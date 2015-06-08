@@ -51,6 +51,16 @@ class EventInvitationController extends \BaseController {
 		   
 		   if(!in_array($message, $messages))
 		   	array_push($messages, $message);
+
+		   $currentUser = DB::table('users')
+	   			->where('fb_id', Request::header('user_id'))
+	   			->whereNotNull('fb_id')
+	   			->first();
+
+	   	if($user->id == $currentUser->id)
+	   	{
+	   		$invite["belongsToMe"] = true;
+	   	}
 		}
 
 	   return '{ "eventInvitations": '.$invites.', "events": ['.implode(',', $events).'], "messages": ['.implode(',', $messages).'], "locations": ['.implode(',', $locations).'] }';
@@ -141,6 +151,16 @@ class EventInvitationController extends \BaseController {
 		$eventInvitation["message"] = $eventInvitation->message_id;
 
 		$event = myEvent::find($eventInvitation->event_id);
+
+		$currentUser = DB::table('users')
+	   			->where('fb_id', Request::header('user_id'))
+	   			->whereNotNull('fb_id')
+	   			->first();
+
+   	if($eventInvitation->user_id == $currentUser->id)
+   	{
+   		$invite["belongsToMe"] = true;
+   	}
 	   
 	   return '{"eventInvitation":'.$eventInvitation.', "events": ['.$event.'] }';
 	}

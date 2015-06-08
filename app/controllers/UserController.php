@@ -27,6 +27,11 @@ class UserController extends \BaseController {
 
 	   	foreach($users as $user)
 	   	{
+	   		if(Request::header('user_id') == $user->fb_id)
+				{
+					$user["isMe"] = true;
+				}
+		
 	   		// FRIENDS
 	   		$friendships = DB::table('friendships')
 				->where('user_id', '=', $user->id)
@@ -87,6 +92,23 @@ class UserController extends \BaseController {
 				}
 
 				$user["meethubComments"] = $comments;
+
+				$currentUser = DB::table('users')
+	   			->where('fb_id', Request::header('user_id'))
+	   			->whereNotNull('fb_id')
+	   			->first();
+
+				$invites = EventInvitation::where('user_id', '=', $currentUser->id)->get();
+
+				$invite_ids = [];
+
+				foreach ($invites as $invite)
+				{
+				   if(!in_array($invite["id"], $invite_ids))
+						array_push($invite_ids, $invite["id"]);
+				}
+
+				$user["eventInvitations"] = $invite_ids;
 		   }
 
 		   return '{ "users": '.$users.' }';
@@ -256,6 +278,11 @@ class UserController extends \BaseController {
 		}
 
 		$user["meethubComments"] = $comments;
+
+		if(Request::header('user_id') == $user->fb_id)
+		{
+			$user["isMe"] = true;
+		}
 
 	   return '{ "user":'.$user.' }';
 	}

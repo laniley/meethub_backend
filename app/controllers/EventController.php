@@ -126,6 +126,39 @@ class EventController extends \BaseController {
 	{
 		$event = myEvent::findOrFail($id);
 
+		$user = DB::table('users')
+	   			->where('fb_id', Request::header('user_id'))
+	   			->whereNotNull('fb_id')
+	   			->first();
+
+		$invites = EventInvitation::whereRaw('event_id = ? and user_id = ?', array($event->id, $user->id))->get();
+
+		$invite_ids = [];
+		// $my_event_invitation = null;
+		// $friend_event_invitation_ids = [];
+
+		foreach ($invites as $invite)
+		{
+		   if(!in_array($invite["id"], $invite_ids))
+				array_push($invite_ids, $invite["id"]);
+
+			// $invited_user = User::findOrFail($invite["user_id"]);
+
+			// if($invited_user["fb_id"] == Request::header('user_id'))
+			// {
+			// 	$my_event_invitation = $invite["id"];
+			// }
+			// else
+			// {
+			// 	if(!in_array($invite["id"], $friend_event_invitation_ids))
+			// 		array_push($friend_event_invitation_ids, $invite["id"]);
+			// }
+		}
+
+		$event["eventInvitations"] = $invite_ids;
+		// $event["my_event_invitation"] = $my_event_invitation;
+		// $event["friend_event_invitations"] = $friend_event_invitation_ids;
+
 		return '{ "event":'.$event.' }';
 	}
 
