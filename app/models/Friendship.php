@@ -15,6 +15,8 @@ class Friendship extends Eloquent {
 	 *
 	 * @var array
 	 */
+	protected $hidden = array('user_id', 'friend_id');
+
 	public function user()
  	{
      	return $this->hasOne('User');

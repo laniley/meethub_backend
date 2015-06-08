@@ -201,45 +201,47 @@ class UserController extends \BaseController {
 
 	   $user = User::findOrFail($id);
 
-	   foreach($friends as $friend)
-	   {
-	   	Friendship::firstOrCreate(array(
-	   		'user_id' => $id,
-	   		'friend_id' => $friend
-	   	));
-	   }
+	 //   foreach($friends as $friend)
+	 //   {
+	 //   	Friendship::firstOrCreate(array(
+	 //   		'user_id' => $id,
+	 //   		'friend_id' => $friend
+	 //   	));
+	 //   }
 
-	   $friendships = DB::table('friendships')
-				->where('user_id', '=', $id)
-		      ->orWhere('friend_id', '=', $id)
-		      ->get();
+	 //   $friendships = DB::table('friendships')
+		// 		->where('user_id', '=', $id)
+		//       ->orWhere('friend_id', '=', $id)
+		//       ->get();
 
-		$friend_ids = [];
-		$friends = [];
+		// $friend_ids = [];
+		// $friends = [];
 
-      foreach($friendships as $friendship_object)
-	   {
-	   	$friendship = (array)$friendship_object;
+    //   foreach($friendships as $friendship_object)
+	   // {
+	   // 	$friendship = (array)$friendship_object;
 
-	   	$friend_id = null;
+	   // 	$friend_id = null;
 	   	
-	   	if($friendship["user_id"] != $id)
-	   		$friend_id = $friendship["user_id"];
-	   	else
-	   		$friend_id = $friendship["friend_id"];
+	   // 	if($friendship["user_id"] != $id)
+	   // 		$friend_id = $friendship["user_id"];
+	   // 	else
+	   // 		$friend_id = $friendship["friend_id"];
 
-	   	if(!in_array($friend_id, $friend_ids))
-	   		array_push($friend_ids, $friend_id);
+	   // 	if(!in_array($friend_id, $friend_ids))
+	   // 		array_push($friend_ids, $friend_id);
 
-	   	$friend = User::findOrFail($friend_id);
+	   // 	$friend = User::findOrFail($friend_id);
 
-	   	if(!in_array($friend, $friends))
-	   		array_push($friends, $friend);
-	   }
+	   // 	if(!in_array($friend, $friends))
+	   // 		array_push($friends, $friend);
+	   // }
 
-	   $user["friends"] = $friend_ids;
+	   // $user["friends"] = $friend_ids;
 
-	   return '{"user":'.$user.', "users": ['.implode(',', $friends).'] }';
+	   // return '{"user":'.$user.', "users": ['.implode(',', $friends).'] }';
+
+	   return '{"user":'.$user.' }';
 	}
 
 
@@ -347,23 +349,23 @@ class UserController extends \BaseController {
 
 	   $user = User::findOrFail($id);
 
-	   foreach($friends as $friend)
-	   {
-	   	$friendships = DB::table('friendships')
-				->where(DB::raw(' ( user_id = '.$id.' AND friend_id = '.$friend.' ) OR ( user_id = '.$friend.' AND friend_id = '.$id.' ) '))
-		      ->get();
+	   // foreach($friends as $friend)
+	   // {
+	   // 	$friendships = DB::table('friendships')
+				// ->where(DB::raw(' ( user_id = '.$id.' AND friend_id = '.$friend.' ) OR ( user_id = '.$friend.' AND friend_id = '.$id.' ) '))
+		  //     ->get();
 
-		   if(count($friendships) === 0)
-	   	{
-	   		DB::table('friendships')
-				->insert(
-			    	array(
-			    			'user_id' => $id,
-			    			'friend_id' => $friend
-			    		)
-					);
-	   	}
-	   }
+		  //  if(count($friendships) === 0)
+	   // 	{
+	   // 		DB::table('friendships')
+				// ->insert(
+			 //    	array(
+			 //    			'user_id' => $id,
+			 //    			'friend_id' => $friend
+			 //    		)
+				// 	);
+	   // 	}
+	   // }
 
 	   // MEETHUB-COMMENTS
 	   $meethubs = [];

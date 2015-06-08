@@ -9,7 +9,8 @@ class FriendshipController extends \BaseController {
 	 */
 	public function index()
 	{
-		$user_id = Input::get('user');
+		$user_id = Input::get('user_id');
+		$friend_id = Input::get('friend_id');
 
 		// test the DB-Connection
 		try
@@ -21,26 +22,10 @@ class FriendshipController extends \BaseController {
 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
 	   }
 
-	   $friendships = Friendship::where('user_id', '=', $user_id)->get();
-	   $users = [];
-	   $friends = [];
+	   $friendships = Friendship::whereRaw('user_id = ? and friend_id = ? ', array($user_id, $friend_id))
+	   						->get();
 
-	   foreach ($friendships as $friendship)
-		{
-		   $friendship["user"] = $friendship->user_id;
-		   $friendship["friend"] = $friendship->friend_id;
-
-		   $user = User::find($friendship->user_id);
-		   $friend = User::find($friendship->friend_id);
-
-		   if(!in_array($user, $users))
-		   	array_push($users, $user);
-		   
-		   if(!in_array($friend, $friends))
-		   	array_push($friends, $friend);
-		}
-
-	   return '{ "users": '.$invites.', "events": ['.implode(',', $events).'], "invited_users": ['.implode(',', $users).'], "messages": ['.implode(',', $messages).'], "locations": ['.implode(',', $locations).'] }';
+	   return '{ "friendships": '.$friendships.'}';
 	}
 
 
@@ -62,7 +47,36 @@ class FriendshipController extends \BaseController {
 	 */
 	public function store()
 	{
-		
+		$user_id = Input::get('friendship.user');
+		$friend_id = Input::get('friendship.friend');
+
+   	// check if friendship already exists
+	   $friendship = DB::table('friendships')
+	   			->where('user_id', $user_id)
+	   			->where('friend_id', $friend_id)
+	   			->first();
+
+	   // save
+	   if(!$friendship) // insert friendship
+	   {
+			$id = DB::table('friendships')
+				->insertGetId(
+			    	array(
+			    			'user_id' => $user_id,
+			    			'friend_id' => $friend_id
+			    		)
+					);
+	   }
+	   else
+	   {
+	   	$id = $friendship->id;
+	   }
+
+	   $friendship = Friendship::findOrFail($id);
+	   $friendship["user"] = $friendship["user_id"];
+	   $friendship["friend"] = $friendship["friend_id"];
+
+	   return '{"friendship":'.$friendship.' }';
 	}
 
 

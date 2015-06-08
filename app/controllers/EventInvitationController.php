@@ -132,6 +132,16 @@ class EventInvitationController extends \BaseController {
 			$eventInvitation = EventInvitation::findOrFail($id);
 	   }
 
+	   $currentUser = DB::table('users')
+	   			->where('fb_id', Request::header('user_id'))
+	   			->whereNotNull('fb_id')
+	   			->first();
+
+   	if($eventInvitation->user_id == $currentUser->id)
+   	{
+   		$eventInvitation["belongsToMe"] = true;
+   	}
+
 	   return '{"eventInvitation":'.$eventInvitation.' }';
 	}
 
@@ -159,7 +169,7 @@ class EventInvitationController extends \BaseController {
 
    	if($eventInvitation->user_id == $currentUser->id)
    	{
-   		$invite["belongsToMe"] = true;
+   		$eventInvitation["belongsToMe"] = true;
    	}
 	   
 	   return '{"eventInvitation":'.$eventInvitation.', "events": ['.$event.'] }';
@@ -219,6 +229,16 @@ class EventInvitationController extends \BaseController {
 	   }
 
 	   $eventInvitation = EventInvitation::findOrFail($id);
+
+	   $currentUser = DB::table('users')
+	   			->where('fb_id', Request::header('user_id'))
+	   			->whereNotNull('fb_id')
+	   			->first();
+
+   	if($eventInvitation->user_id == $currentUser->id)
+   	{
+   		$eventInvitation["belongsToMe"] = true;
+   	}
 	   
 	   return '{"eventInvitation":'.$eventInvitation.' }';
 	}
