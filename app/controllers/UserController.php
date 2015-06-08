@@ -228,11 +228,13 @@ class UserController extends \BaseController {
 	   	else
 	   		$friend_id = $friendship["friend_id"];
 
-	   	array_push($friend_ids, $friend_id);
+	   	if(!in_array($friend_id, $friend_ids))
+	   		array_push($friend_ids, $friend_id);
 
 	   	$friend = User::findOrFail($friend_id);
 
-	   	array_push($friends, $friend);
+	   	if(!in_array($friend, $friends))
+	   		array_push($friends, $friend);
 	   }
 
 	   $user["friends"] = $friend_ids;
