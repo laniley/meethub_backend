@@ -63,7 +63,7 @@ class EventInvitationController extends \BaseController {
 	   	}
 		}
 
-	   return '{ "eventInvitations": '.$invites.', "events": ['.implode(',', $events).'], "messages": ['.implode(',', $messages).'], "locations": ['.implode(',', $locations).'] }';
+	   return '{ "eventInvitations": '.$invites.' }';
 	}
 
 

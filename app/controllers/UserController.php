@@ -121,7 +121,7 @@ class UserController extends \BaseController {
 				$user["eventInvitations"] = $invite_ids;
 		   }
 
-		   return '{ "users": '.$users.', "eventInvitations": ['.implode(',', $all_invites).'] }';
+		   return '{ "users": '.$users.' }';
 	   }
 	   else
 	   	$users = User::all();
@@ -323,7 +323,7 @@ class UserController extends \BaseController {
 				$user["isMe"] = true;
 			}
 
-	   return '{ "user":'.$user.', "eventInvitations": ['.implode(',', $invites).'] }';
+	   return '{ "user":'.$user.' }';
 	}
 
 

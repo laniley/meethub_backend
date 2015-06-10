@@ -27,22 +27,7 @@ class EventController extends \BaseController {
 
    	foreach ($events as $event)
 		{
-		   $event["location"] = $event->location_id;
-
-		   
-
-			$invites = EventInvitation::where('event_id', '=', $event->id)->get();
-
-			$invite_ids = [];
-
-			foreach ($invites as $invite)
-			{
-
-			   if(!in_array($invite["id"], $invite_ids))
-					array_push($invite_ids, $invite["id"]);
-			}
-
-			$event["eventInvitations"] = $invite_ids;
+			$event = $this->loadEventData($event);
 		}
 
 	   return '{"events":'.$events.'}';
@@ -142,39 +127,8 @@ class EventController extends \BaseController {
 	public function show($id)
 	{
 		$event = myEvent::findOrFail($id);
-
-		$user = DB::table('users')
-	   			->where('fb_id', Request::header('user_id'))
-	   			->whereNotNull('fb_id')
-	   			->first();
-
-		$invites = EventInvitation::whereRaw('event_id = ? and user_id = ?', array($event->id, $user->id))->get();
-
-		$invite_ids = [];
-		// $my_event_invitation = null;
-		// $friend_event_invitation_ids = [];
-
-		foreach ($invites as $invite)
-		{
-		   if(!in_array($invite["id"], $invite_ids))
-				array_push($invite_ids, $invite["id"]);
-
-			// $invited_user = User::findOrFail($invite["user_id"]);
-
-			// if($invited_user["fb_id"] == Request::header('user_id'))
-			// {
-			// 	$my_event_invitation = $invite["id"];
-			// }
-			// else
-			// {
-			// 	if(!in_array($invite["id"], $friend_event_invitation_ids))
-			// 		array_push($friend_event_invitation_ids, $invite["id"]);
-			// }
-		}
-
-		$event["eventInvitations"] = $invite_ids;
-		// $event["my_event_invitation"] = $my_event_invitation;
-		// $event["friend_event_invitations"] = $friend_event_invitation_ids;
+		
+		$event = $this->loadEventData($event);
 
 		return '{ "event":'.$event.' }';
 	}
@@ -229,5 +183,26 @@ class EventController extends \BaseController {
 		//
 	}
 
+
+	private function loadEventData($event)
+	{
+		$event["location"] = $event->location_id;
+		   
+
+		$invites = EventInvitation::where('event_id', '=', $event->id)->get();
+
+		$invite_ids = [];
+
+		foreach ($invites as $invite)
+		{
+
+		   if(!in_array($invite["id"], $invite_ids))
+				array_push($invite_ids, $invite["id"]);
+		}
+
+		$event["eventInvitations"] = $invite_ids;
+
+		return $event;
+	}
 
 }
