@@ -23,9 +23,26 @@ class EventController extends \BaseController {
 	   // check if event already exists
    	$events = myEvent::where('fb_id', '=', $fb_id)->get();
 
+   	$all_invites = [];
+
    	foreach ($events as $event)
 		{
 		   $event["location"] = $event->location_id;
+
+		   
+
+			$invites = EventInvitation::where('event_id', '=', $event->id)->get();
+
+			$invite_ids = [];
+
+			foreach ($invites as $invite)
+			{
+
+			   if(!in_array($invite["id"], $invite_ids))
+					array_push($invite_ids, $invite["id"]);
+			}
+
+			$event["eventInvitations"] = $invite_ids;
 		}
 
 	   return '{"events":'.$events.'}';
