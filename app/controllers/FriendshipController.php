@@ -25,6 +25,12 @@ class FriendshipController extends \BaseController {
 	   $friendships = Friendship::whereRaw('user_id = ? and friend_id = ? ', array($user_id, $friend_id))
 	   						->get();
 
+	   foreach ($friendships as $friendship)
+		{
+		   $friendship["user"] = $friendship["user_id"];
+	   	$friendship["friend"] = $friendship["friend_id"];
+		}
+
 	   return '{ "friendships": '.$friendships.'}';
 	}
 

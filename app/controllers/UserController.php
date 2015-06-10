@@ -25,6 +25,8 @@ class UserController extends \BaseController {
 
 	   	$users = User::where('fb_id', '=', $fb_id)->get();
 
+	   	$all_invites = [];
+
 	   	foreach($users as $user)
 	   	{
 	   		if(Request::header('user_id') == $user->fb_id)
@@ -98,20 +100,28 @@ class UserController extends \BaseController {
 	   			->whereNotNull('fb_id')
 	   			->first();
 
-				$invites = EventInvitation::where('user_id', '=', $currentUser->id)->get();
+				$invites = EventInvitation::where('user_id', '=', $user->id)->get();
 
 				$invite_ids = [];
 
 				foreach ($invites as $invite)
 				{
+					if($user->id == $currentUser->id)
+			   	{
+			   		$invite["belongsToMe"] = true;
+			   	}
+
 				   if(!in_array($invite["id"], $invite_ids))
 						array_push($invite_ids, $invite["id"]);
+
+					if(!in_array($invite, $all_invites))
+						array_push($all_invites, $invite);
 				}
 
 				$user["eventInvitations"] = $invite_ids;
 		   }
 
-		   return '{ "users": '.$users.' }';
+		   return '{ "users": '.$users.', "eventInvitations": ['.implode(',', $all_invites).'] }';
 	   }
 	   else
 	   	$users = User::all();
@@ -271,24 +281,49 @@ class UserController extends \BaseController {
 				array_push($meethubs, $membership["meethub_id"]);
 		}
 
-		foreach ($meethubs as $meethub)
-		{
-	      $comments_of_meethub = MeethubComment::where('meethub_id', '=', $meethub)->get();
+		// meethubComments
+			foreach ($meethubs as $meethub)
+			{
+		      $comments_of_meethub = MeethubComment::where('meethub_id', '=', $meethub)->get();
 
-			foreach ($comments_of_meethub as $comment_of_meethub)
-			{	
-				array_push($comments, $comment_of_meethub->id);
+				foreach ($comments_of_meethub as $comment_of_meethub)
+				{	
+					array_push($comments, $comment_of_meethub->id);
+				}
 			}
-		}
 
-		$user["meethubComments"] = $comments;
+			$user["meethubComments"] = $comments;
 
-		if(Request::header('user_id') == $user->fb_id)
-		{
-			$user["isMe"] = true;
-		}
+		// eventInvitations
+			$invites = EventInvitation::where('user_id', '=', $id)->get();
 
-	   return '{ "user":'.$user.' }';
+			$invite_ids = [];
+
+			$currentUser = DB::table('users')
+	   			->where('fb_id', Request::header('user_id'))
+	   			->whereNotNull('fb_id')
+	   			->first();
+
+			foreach ($invites as $invite)
+			{
+				if($user->id == $currentUser->id)
+		   	{
+		   		$invite["belongsToMe"] = true;
+		   	}
+
+			   if(!in_array($invite["id"], $invite_ids))
+					array_push($invite_ids, $invite["id"]);
+			}
+
+			$user["eventInvitations"] = $invite_ids;
+
+		// isMe
+			if(Request::header('user_id') == $user->fb_id)
+			{
+				$user["isMe"] = true;
+			}
+
+	   return '{ "user":'.$user.', "eventInvitations": ['.implode(',', $invites).'] }';
 	}
 
 

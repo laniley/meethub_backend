@@ -155,7 +155,19 @@ class MessageController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		//
+		// test the DB-Connection
+		try
+	   {
+	      $pdo = DB::connection('mysql')->getPdo();
+	   }
+	   catch(PDOException $exception)
+	   {
+	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	   }
+
+	   $message = Message::findOrFail($id);
+
+	   return '{ "message":'.$message.' }';
 	}
 
 
