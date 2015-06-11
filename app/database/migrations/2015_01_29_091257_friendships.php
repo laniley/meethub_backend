@@ -17,7 +17,7 @@ class Friendships extends Migration {
 			$table->increments('id');
 			$table->integer('user_id')->unsigned();
 			$table->integer('friend_id')->unsigned();
-			$table->boolean('hasBeenSeen')->default(false);
+			$table->boolean('has_been_seen')->default(false);
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
 

@@ -118,7 +118,7 @@ class FriendshipController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$status = Input::get('eventInvitation.status');
+		$has_been_seen = Input::get('friendship.has_been_seen');
 
 		// test the DB-Connection
 		try
@@ -130,29 +130,31 @@ class FriendshipController extends \BaseController {
 	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
 	   }
 
-	   // check if eventInvitation already exists
-	   $eventInvitation = DB::table('mm_users_events')->where('id', $id)->first();
+	   // check if friendship exists
+	   $friendship = DB::table('friendships')->where('id', $id)->first();
 
 	   $date = new \DateTime;
 
 	 	// update
-	 	if($eventInvitation)
+	 	if($friendship)
 	 	{
-			$id = $eventInvitation->id;
+			$id = $friendship->id;
 
-	 		DB::table('mm_users_events')
+	 		DB::table('friendships')
             ->where('id', $id)
             ->update(
             	array(
-            			'status' => $status,
+            			'has_been_seen' => $has_been_seen,
             			'updated_at' => $date
             		)
             	);
 	   }
 
-	   $eventInvitation = EventInvitation::findOrFail($id);
-	   
-	   return '{"eventInvitation":'.$eventInvitation.' }';
+	   $friendship = Friendship::findOrFail($id);
+	   $friendship["user"] = $friendship["user_id"];
+	   $friendship["friend"] = $friendship["friend_id"];
+
+	   return '{"friendship":'.$friendship.' }';
 	}
 
 
