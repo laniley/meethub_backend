@@ -7,135 +7,23 @@ class UserController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function index()
-	{
+	public function index() {
 		// test the DB-Connection
-		try
-	   {
-	      $pdo = DB::connection('mysql')->getPdo();
-	   }
-	   catch(PDOException $exception)
-	   {
-	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
-	   }
+		try {
+	    $pdo = DB::connection('mysql')->getPdo();
+	  }
+	  catch(PDOException $exception) {
+	    return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	  }
 
-	   if(Input::has('fb_id'))
-	   {
-	   	$fb_id = Input::get('fb_id');
+	  if(Input::has('fb_id')) {
+	   	$users = User::where('fb_id', Input::get('fb_id'))->get();
+	  }
+	  else {
+			$users = User::all();
+		}
 
-	   	$users = User::where('fb_id', '=', $fb_id)->get();
-
-	   	$all_invites = [];
-
-	   	foreach($users as $user)
-	   	{
-	   		if(Request::header('user_id') == $user->fb_id)
-				{
-					$user["isMe"] = true;
-				}
-		
-	   		// FRIENDS
-	   		$friendships = DB::table('friendships')
-				->where('user_id', '=', $user->id)
-		      ->orWhere('friend_id', '=', $user->id)
-		      ->get();
-
-				$friend_ids = [];
-				$friends = [];
-
-				foreach($friendships as $friendship_object)
-			   {
-			   	$friendship = (array)$friendship_object;
-
-			   	$friend_id = null;
-			   	
-			   	if($friendship["user_id"] != $user->id)
-			   		$friend_id = $friendship["user_id"];
-			   	else
-			   		$friend_id = $friendship["friend_id"];
-
-			   	array_push($friend_ids, $friend_id);
-
-			   	$friend = User::findOrFail($friend_id);
-
-			   	array_push($friends, $friend);
-			   }
-
-			   $user["friends"] = $friend_ids;
-
-			   // MEETHUB-COMMENTS
-			   $meethubs = [];
-	   		$comments = [];
-
-			   $meethubMemberships_of_user = DB::table('mm_users_meethubs')
-				->where('user_id', '=', $user->id)
-		      ->get();
-
-			   foreach ($meethubMemberships_of_user as $membership_object)
-				{
-					$membership = (array)$membership_object;
-
-					if(!in_array($membership["meethub_id"], $meethubs))
-						array_push($meethubs, $membership["meethub_id"]);
-				}
-
-				foreach ($meethubs as $meethub)
-				{
-					$comments_of_meethub = DB::table('meethub_comments')
-					->where('meethub_id', '=', $meethub)
-			      ->get();
-
-					foreach ($comments_of_meethub as $comment_of_meethub_object)
-					{	
-						$comment_of_meethub = (array)$comment_of_meethub_object;
-
-						array_push($comments, $comment_of_meethub["id"]);
-					}
-				}
-
-				$user["meethubComments"] = $comments;
-
-				$currentUser = DB::table('users')
-	   			->where('fb_id', Request::header('user_id'))
-	   			->whereNotNull('fb_id')
-	   			->first();
-
-				$invites = EventInvitation::where('user_id', '=', $user->id)->get();
-
-				$invite_ids = [];
-
-				foreach ($invites as $invite)
-				{
-					if($user->id == $currentUser->id)
-			   	{
-			   		$invite["belongsToMe"] = true;
-			   	}
-
-				   if(!in_array($invite["id"], $invite_ids))
-						array_push($invite_ids, $invite["id"]);
-
-					if(!in_array($invite, $all_invites))
-						array_push($all_invites, $invite);
-				}
-
-				$user["eventInvitations"] = $invite_ids;
-		   }
-
-		   return '{ "users": '.$users.' }';
-	   }
-	   else
-	   	$users = User::all();
-	}
-
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
+		return '{ "users": '.$users.' }';
 	}
 
 
@@ -232,7 +120,7 @@ class UserController extends \BaseController {
 	   // 	$friendship = (array)$friendship_object;
 
 	   // 	$friend_id = null;
-	   	
+
 	   // 	if($friendship["user_id"] != $id)
 	   // 		$friend_id = $friendship["user_id"];
 	   // 	else
@@ -287,7 +175,7 @@ class UserController extends \BaseController {
 		      $comments_of_meethub = MeethubComment::where('meethub_id', '=', $meethub)->get();
 
 				foreach ($comments_of_meethub as $comment_of_meethub)
-				{	
+				{
 					array_push($comments, $comment_of_meethub->id);
 				}
 			}
@@ -300,7 +188,7 @@ class UserController extends \BaseController {
 			$invite_ids = [];
 
 			$currentUser = DB::table('users')
-	   			->where('fb_id', Request::header('user_id'))
+	   			->where('fb_id', Request::header('userid'))
 	   			->whereNotNull('fb_id')
 	   			->first();
 
@@ -318,26 +206,13 @@ class UserController extends \BaseController {
 			$user["eventInvitations"] = $invite_ids;
 
 		// isMe
-			if(Request::header('user_id') == $user->fb_id)
+			if(Request::header('userid') == $user->fb_id)
 			{
 				$user["isMe"] = true;
 			}
 
 	   return '{ "user":'.$user.' }';
 	}
-
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
 
 	/**
 	 * Update the specified resource in storage.
@@ -423,7 +298,7 @@ class UserController extends \BaseController {
 	      $comments_of_meethub = MeethubComment::where('meethub_id', '=', $meethub)->get();
 
 			foreach ($comments_of_meethub as $comment_of_meethub)
-			{	
+			{
 				array_push($comments, $comment_of_meethub->id);
 			}
 		}

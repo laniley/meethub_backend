@@ -7,28 +7,36 @@ class EventInvitationController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function index()
-	{
-		$user_id = Input::get('invited_user');
+	public function index() {
+		$user_id = Input::get('invited_user_id');
+		$event_id = Input::get('event_id');
 
 		// test the DB-Connection
-		try
-	   {
-	      $pdo = DB::connection('mysql')->getPdo();
-	   }
-	   catch(PDOException $exception)
-	   {
-	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
-	   }
+		try {
+	    $pdo = DB::connection('mysql')->getPdo();
+	  }
+	  catch(PDOException $exception) {
+	    return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	  }
 
-	   $invites = EventInvitation::where('user_id', '=', $user_id)->get();
-	   $events = [];
-	   $users = [];
-	   $messages = [];
-	   $locations = [];
+		$invites = new EventInvitation();
 
-	   foreach ($invites as $invite)
-		{
+		if(isset($event_id)) {
+			$invites = $invites->where('event_id', $event_id);
+		}
+
+		if(isset($user_id)) {
+			$invites = $invites->where('user_id', $user_id);
+		}
+
+		$invites = $invites->get();
+
+	  $events = [];
+	  $users = [];
+	  $messages = [];
+	  $locations = [];
+
+	   foreach ($invites as $invite) {
 		   $invite["event"] = $invite->event_id;
 		   $invite["invited_user"] = $invite->user_id;
 		   $invite["message"] = $invite->message_id;
@@ -48,33 +56,12 @@ class EventInvitationController extends \BaseController {
 
 		   if(!in_array($user, $users))
 		   	array_push($users, $user);
-		   
+
 		   if(!in_array($message, $messages))
 		   	array_push($messages, $message);
-
-		   $currentUser = DB::table('users')
-	   			->where('fb_id', Request::header('user_id'))
-	   			->whereNotNull('fb_id')
-	   			->first();
-
-	   	if($user->id == $currentUser->id)
-	   	{
-	   		$invite["belongsToMe"] = true;
-	   	}
 		}
 
 	   return '{ "eventInvitations": '.$invites.' }';
-	}
-
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
 	}
 
 
@@ -83,108 +70,31 @@ class EventInvitationController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function store()
-	{
-		$event_id = Input::get('eventInvitation.event');
-		$user_id = Input::get('eventInvitation.invited_user');
-		$message_id = Input::get('eventInvitation.message');
+	public function store() {
+		$event_id = Input::get('eventInvitation.event_id');
+		$user_id = Input::get('eventInvitation.invited_user_id');
+		$message_id = Input::get('eventInvitation.message_id');
 		$status = Input::get('eventInvitation.status');
 
 		// test the DB-Connection
-		try
-	   {
-	      $pdo = DB::connection('mysql')->getPdo();
-	   }
-	   catch(PDOException $exception)
-	   {
-	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
-	   }
+		try {
+	    $pdo = DB::connection('mysql')->getPdo();
+	  }
+	  catch(PDOException $exception) {
+	    return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	  }
 
-	   // check if eventInvitation already exists
-	   $eventInvitation = DB::table('mm_users_events')
-	   	->where('user_id', $user_id)
-	   	->where('event_id', $event_id)
-	   	->first();
+		$eventInvitation = EventInvitation::firstOrCreate(array(
+			'user_id' => $user_id,
+			'event_id' => $event_id
+		));
 
-	   // $eventInvitation = EventInvitation::whereRaw('user_id = ? and event_id = ? and user_id IS NOT NULL and event_id IS NOT NULL', array($user_id, $event_id))->get();
+		$eventInvitation->message_id = $message_id;
+		$eventInvitation->status = $status;
 
-	   $date = new \DateTime;
+		$eventInvitation->save();
 
-	 	// insert
-	 	if($eventInvitation)
-	 	{
-	 		$eventInvitation = EventInvitation::findOrFail($eventInvitation->id);
-	 	}
-	 	else
-	 	{
-			$id = DB::table('mm_users_events')
-				->insertGetId(
-			    	array(
-			    			'event_id' => $event_id,
-			    			'user_id' => $user_id,
-			    			'message_id' => $message_id,
-			    			'status' => $status,
-			    			'created_at' => $date,
-			    			'updated_at' => $date
-			    		)
-					);
-
-			$eventInvitation = EventInvitation::findOrFail($id);
-	   }
-
-	   $currentUser = DB::table('users')
-	   			->where('fb_id', Request::header('user_id'))
-	   			->whereNotNull('fb_id')
-	   			->first();
-
-   	if($eventInvitation->user_id == $currentUser->id)
-   	{
-   		$eventInvitation["belongsToMe"] = true;
-   	}
-
-	   return '{"eventInvitation":'.$eventInvitation.' }';
-	}
-
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		$eventInvitation = EventInvitation::findOrFail($id);
-
-		$eventInvitation["invited_user"] = $eventInvitation->user_id;
-		$eventInvitation["event"] = $eventInvitation->event_id;
-		$eventInvitation["message"] = $eventInvitation->message_id;
-
-		$event = myEvent::find($eventInvitation->event_id);
-
-		$currentUser = DB::table('users')
-	   			->where('fb_id', Request::header('user_id'))
-	   			->whereNotNull('fb_id')
-	   			->first();
-
-   	if($eventInvitation->user_id == $currentUser->id)
-   	{
-   		$eventInvitation["belongsToMe"] = true;
-   	}
-	   
-	   return '{"eventInvitation":'.$eventInvitation.', "events": ['.$event.'] }';
-	}
-
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
+	  return '{"eventInvitation":'.$eventInvitation.' }';
 	}
 
 
@@ -194,53 +104,23 @@ class EventInvitationController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
-	{
+	public function update($id) {
 		$status = Input::get('eventInvitation.status');
-
+		$message_id = Input::get('eventInvitation.message_id');
 		// test the DB-Connection
-		try
-	   {
-	      $pdo = DB::connection('mysql')->getPdo();
-	   }
-	   catch(PDOException $exception)
-	   {
-	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
-	   }
+		try {
+	    $pdo = DB::connection('mysql')->getPdo();
+	  }
+	  catch(PDOException $exception) {
+	    return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
+	  }
 
-	   // check if eventInvitation already exists
-	   $eventInvitation = DB::table('mm_users_events')->where('id', $id)->first();
+	  $eventInvitation = EventInvitation::findOrFail($id);
+		$eventInvitation->status = $status;
+		$eventInvitation->message_id = $message_id;
+		$eventInvitation->save();
 
-	   $date = new \DateTime;
-
-	 	// update
-	 	if($eventInvitation)
-	 	{
-			$id = $eventInvitation->id;
-
-	 		DB::table('mm_users_events')
-            ->where('id', $id)
-            ->update(
-            	array(
-            			'status' => $status,
-            			'updated_at' => $date
-            		)
-            	);
-	   }
-
-	   $eventInvitation = EventInvitation::findOrFail($id);
-
-	   $currentUser = DB::table('users')
-	   			->where('fb_id', Request::header('user_id'))
-	   			->whereNotNull('fb_id')
-	   			->first();
-
-   	if($eventInvitation->user_id == $currentUser->id)
-   	{
-   		$eventInvitation["belongsToMe"] = true;
-   	}
-	   
-	   return '{"eventInvitation":'.$eventInvitation.' }';
+	  return '{"eventInvitation":'.$eventInvitation.' }';
 	}
 
 

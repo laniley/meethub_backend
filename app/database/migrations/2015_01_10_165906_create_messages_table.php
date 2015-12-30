@@ -16,11 +16,12 @@ class CreateMessagesTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('fb_id')->nullable();
+			$table->string('message_type')->nullable();
 			$table->integer('from_user_id')->unsigned()->nullable();
 			$table->integer('to_user_id')->unsigned();
 			$table->string('subject');
 			$table->string('text')->nullable();
-			$table->boolean('hasBeenRead')->default(false);
+			$table->boolean('has_been_seen')->default(false);
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
 

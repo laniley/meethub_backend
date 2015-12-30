@@ -16,8 +16,7 @@ Route::group(['prefix' => 'meethubbe'], function() {
 
 	Route::resource('meethubs', 'MeethubController');
 
-	// Route::resource('friends', 'FriendController');
-	Route::resource('friendships', 'FriendshipController');
+	Route::resource('friends', 'FriendController');
 
 	Route::resource('events', 'EventController');
 

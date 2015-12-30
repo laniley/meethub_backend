@@ -15,7 +15,8 @@ class Message extends Eloquent {
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('user_id', 'from_user_id', 'to_user_id');
+	protected $hidden = array();
+	protected $fillable = array('fb_id', 'message_type', 'to_user_id');
 
 	public function eventInvitation()
  	{

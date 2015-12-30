@@ -13,12 +13,12 @@
 
 App::before(function($request)
 {
-    // Enable CORS 
-    // In production, replace * with http://yourdomain.com 
+    // Enable CORS
+    // In production, replace * with http://yourdomain.com
 	$http_origin = $_SERVER['HTTP_ORIGIN'];
 
 	if ($http_origin == "http://localhost:4200" || $http_origin == "http://www.meethub.de" || $http_origin == "https://www.meethub.de" || $http_origin == "http://meethub.de" || $http_origin == "https://meethub.de")
-	{  
+	{
 	    header("Access-Control-Allow-Origin: $http_origin");
 	}
 
@@ -28,7 +28,7 @@ App::before(function($request)
         // The client-side application can set only headers allowed in Access-Control-Allow-Headers
         $headers = [
             'Access-Control-Allow-Methods'=> 'POST, GET, OPTIONS, PUT, DELETE',
-            'Access-Control-Allow-Headers'=> 'X-Requested-With, Content-Type, X-Auth-Token, Origin, Authorization, user_id'
+            'Access-Control-Allow-Headers'=> 'X-Requested-With, Content-Type, X-Auth-Token, Origin, Authorization'
         ];
         return Response::make('You are connected to the API', 200, $headers);
     }
