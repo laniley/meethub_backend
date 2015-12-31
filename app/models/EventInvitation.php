@@ -15,7 +15,6 @@ class EventInvitation extends Eloquent {
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('event_id', 'user_id');
 	protected $fillable = array('event_id', 'user_id', 'message_id');
 
 	public function event()
@@ -25,9 +24,5 @@ class EventInvitation extends Eloquent {
  	public function user()
  	{
      	return $this->hasOne('User');
- 	}
-	public function message()
- 	{
-     	return $this->hasOne('Message');
  	}
 }

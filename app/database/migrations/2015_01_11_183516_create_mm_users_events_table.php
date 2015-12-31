@@ -17,15 +17,14 @@ class CreateMmUsersEventsTable extends Migration {
 			$table->increments('id');
 			$table->integer('event_id')->unsigned();
 			$table->integer('user_id')->unsigned();
-			$table->integer('message_id')->unsigned()->nullable();
 			$table->string('status');
+			$table->boolean('has_been_seen')->default(false);
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
 
 			$table->unique(array('event_id', 'user_id'));
 			$table->foreign('event_id')->references('id')->on('events');
 			$table->foreign('user_id')->references('id')->on('users');
-			$table->foreign('message_id')->references('id')->on('messages');
 		});
 	}
 

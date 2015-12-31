@@ -31,37 +31,7 @@ class EventInvitationController extends \BaseController {
 
 		$invites = $invites->get();
 
-	  $events = [];
-	  $users = [];
-	  $messages = [];
-	  $locations = [];
-
-	   foreach ($invites as $invite) {
-		   $invite["event"] = $invite->event_id;
-		   $invite["invited_user"] = $invite->user_id;
-		   $invite["message"] = $invite->message_id;
-
-		   $event = myEvent::find($invite->event_id);
-		   $event["location"] = $event->location_id;
-
-		   $user = User::find($invite->user_id);
-		   $message = Message::find($invite->message_id);
-		   $location = Location::find($event->location_id);
-
-		   if(!in_array($event, $events))
-		   	array_push($events, $event);
-
-		   if(!in_array($location, $locations))
-		   	array_push($locations, $location);
-
-		   if(!in_array($user, $users))
-		   	array_push($users, $user);
-
-		   if(!in_array($message, $messages))
-		   	array_push($messages, $message);
-		}
-
-	   return '{ "eventInvitations": '.$invites.' }';
+	  return '{ "eventInvitations": '.$invites.' }';
 	}
 
 
@@ -73,7 +43,6 @@ class EventInvitationController extends \BaseController {
 	public function store() {
 		$event_id = Input::get('eventInvitation.event_id');
 		$user_id = Input::get('eventInvitation.invited_user_id');
-		$message_id = Input::get('eventInvitation.message_id');
 		$status = Input::get('eventInvitation.status');
 
 		// test the DB-Connection
@@ -89,7 +58,6 @@ class EventInvitationController extends \BaseController {
 			'event_id' => $event_id
 		));
 
-		$eventInvitation->message_id = $message_id;
 		$eventInvitation->status = $status;
 
 		$eventInvitation->save();
@@ -106,7 +74,7 @@ class EventInvitationController extends \BaseController {
 	 */
 	public function update($id) {
 		$status = Input::get('eventInvitation.status');
-		$message_id = Input::get('eventInvitation.message_id');
+		$has_been_seen = Input::get('eventInvitation.has_been_seen');
 		// test the DB-Connection
 		try {
 	    $pdo = DB::connection('mysql')->getPdo();
@@ -117,23 +85,9 @@ class EventInvitationController extends \BaseController {
 
 	  $eventInvitation = EventInvitation::findOrFail($id);
 		$eventInvitation->status = $status;
-		$eventInvitation->message_id = $message_id;
+		$eventInvitation->has_been_seen = $has_been_seen;
 		$eventInvitation->save();
 
 	  return '{"eventInvitation":'.$eventInvitation.' }';
 	}
-
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
-	}
-
-
 }
