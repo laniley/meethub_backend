@@ -42,7 +42,7 @@ class EventInvitationController extends \BaseController {
 	 */
 	public function store() {
 		$event_id = Input::get('eventInvitation.event_id');
-		$user_id = Input::get('eventInvitation.invited_user_id');
+		$user_id = Input::get('eventInvitation.user_id');
 		$status = Input::get('eventInvitation.status');
 
 		// test the DB-Connection
