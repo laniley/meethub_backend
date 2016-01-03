@@ -18,7 +18,8 @@ class CreateEventsTable extends Migration {
 
 			$table->string('name');
 			$table->string('fb_id')->unique();
-			$table->string('description')->nullable();
+			$table->string('description', 4000)->nullable();
+			$table->string('picture')->nullable();
 			$table->time('start_time');
 			$table->date('start_date');
 			$table->integer('location_id')->unsigned()->nullable();

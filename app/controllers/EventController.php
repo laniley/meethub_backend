@@ -39,6 +39,7 @@ class EventController extends \BaseController {
 		$event->start_time = Input::get('event.start_time');
 		$event->start_date = Input::get('event.start_date');
 		$event->location_id = Input::get('event.location_id');
+		$event->picture = Input::get('event.picture');
 
 		$event->save();
 

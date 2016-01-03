@@ -99,46 +99,6 @@ class UserController extends \BaseController {
 
 	   $user = User::findOrFail($id);
 
-	 //   foreach($friends as $friend)
-	 //   {
-	 //   	Friendship::firstOrCreate(array(
-	 //   		'user_id' => $id,
-	 //   		'friend_id' => $friend
-	 //   	));
-	 //   }
-
-	 //   $friendships = DB::table('friendships')
-		// 		->where('user_id', '=', $id)
-		//       ->orWhere('friend_id', '=', $id)
-		//       ->get();
-
-		// $friend_ids = [];
-		// $friends = [];
-
-    //   foreach($friendships as $friendship_object)
-	   // {
-	   // 	$friendship = (array)$friendship_object;
-
-	   // 	$friend_id = null;
-
-	   // 	if($friendship["user_id"] != $id)
-	   // 		$friend_id = $friendship["user_id"];
-	   // 	else
-	   // 		$friend_id = $friendship["friend_id"];
-
-	   // 	if(!in_array($friend_id, $friend_ids))
-	   // 		array_push($friend_ids, $friend_id);
-
-	   // 	$friend = User::findOrFail($friend_id);
-
-	   // 	if(!in_array($friend, $friends))
-	   // 		array_push($friends, $friend);
-	   // }
-
-	   // $user["friends"] = $friend_ids;
-
-	   // return '{"user":'.$user.', "users": ['.implode(',', $friends).'] }';
-
 	   return '{"user":'.$user.' }';
 	}
 
@@ -220,8 +180,7 @@ class UserController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
-	{
+	public function update($id) {
 		$fb_id = Input::get('user.fb_id');
 		$email = Input::get('user.email');
 		$first_name = Input::get('user.first_name');
@@ -231,16 +190,6 @@ class UserController extends \BaseController {
 		$friends = Input::get('user.friends');
 		$first_login = Input::get('user.first_login');
 		$last_login = Input::get('user.last_login');
-
-		// test the DB-Connection
-		try
-	   {
-	      $pdo = DB::connection('mysql')->getPdo();
-	   }
-	   catch(PDOException $exception)
-	   {
-	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
-	   }
 
 	   DB::table('users')
             ->where('id', $id)
