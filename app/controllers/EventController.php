@@ -7,18 +7,8 @@ class EventController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function index()
-	{
+	public function index() {
 		$fb_id = Input::get('fb_id');
-
-		try
-	   {
-	      $pdo = DB::connection('mysql')->getPdo();
-	   }
-	   catch(PDOException $exception)
-	   {
-	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
-	   }
 
 	   // check if event already exists
    	$events = myEvent::where('fb_id', '=', $fb_id)->get();
@@ -33,88 +23,26 @@ class EventController extends \BaseController {
 	   return '{"events":'.$events.'}';
 	}
 
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
-	}
-
-
 	/**
 	 * Store a newly created resource in storage.
 	 *
 	 * @return Response
 	 */
-	public function store()
-	{
-		$fb_id = Input::get('event.fb_id');
-		$name = Input::get('event.name');
-		$description = Input::get('event.description');
-		$start_time = Input::get('event.start_time');
-		$start_date = Input::get('event.start_date');
-		$status = Input::get('event.status');
-		$location_id = Input::get('event.location');
+	public function store() {
+	  // check if event already exists
+	  $event = myEvent::firstOrCreate(array(
+			'fb_id' => Input::get('event.fb_id')
+		));
 
-		// test the DB-Connection
-		try
-	   {
-	      $pdo = DB::connection('mysql')->getPdo();
-	   }
-	   catch(PDOException $exception)
-	   {
-	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
-	   }
+		$event->name = Input::get('event.name');
+		$event->description = Input::get('event.description');
+		$event->start_time = Input::get('event.start_time');
+		$event->start_date = Input::get('event.start_date');
+		$event->location_id = Input::get('event.location_id');
 
-	   // check if event already exists
-	   $event = DB::table('events')
-	   				->where('fb_id', $fb_id)
-	   				->whereNotNull('fb_id')
-	   				->first();
+		$event->save();
 
-	   // $date = new \DateTime;
-
-	 	// save event if not already exists
-	 	if($event)
-	 	{
-	 		$id = $event->id;
-
-	 		DB::table('events')
-            ->where('id', $id)
-            ->update(
-            	array(
-            			'name' => $name,
-			    			'description' => $description,
-			    			'start_time' => $start_time,
-			    			'start_date' => $start_date,
-			    			'location_id' => $location_id
-            		)
-            	);
-	 	}
-	   else
-	   {
-			$id = DB::table('events')
-				->insertGetId(
-			    	array(
-			    			'fb_id' => $fb_id,
-			    			'name' => $name,
-			    			'description' => $description,
-			    			'start_time' => $start_time,
-			    			'start_date' => $start_date,
-			    			'location_id' => $location_id
-			    		)
-					);
-	   }
-
-	   $event = myEvent::findOrFail($id);
-	   // $event->load('location');
-	   // $location = Location::find($event->location_id);
-
-	   return '{"event":'.$event.' }';
+	  return '{"event":'.$event.' }';
 	}
 
 
@@ -127,7 +55,7 @@ class EventController extends \BaseController {
 	public function show($id)
 	{
 		$event = myEvent::findOrFail($id);
-		
+
 		$event = $this->loadEventData($event);
 
 		return '{ "event":'.$event.' }';
@@ -152,23 +80,19 @@ class EventController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
-	{
-		try
-	   {
-	      $pdo = DB::connection('mysql')->getPdo();
-	   }
-	   catch(PDOException $exception)
-	   {
-	      return Response::make('Database error! ' . $exception->getCode() . ' - ' . $exception->getMessage());
-	   }
-
+	public function update($id) {
 	   // check if event already exists
    	$event = myEvent::findOrFail($id);
 
-   	$event["location"] = $event->location_id;
+		$event->name = Input::get('event.name');
+		$event->description = Input::get('event.description');
+		$event->start_time = Input::get('event.start_time');
+		$event->start_date = Input::get('event.start_date');
+		$event->location_id = Input::get('event.location_id');
 
-	   return '{"event":'.$event.'}';
+		$event->save();
+
+	  return '{"event":'.$event.'}';
 	}
 
 
@@ -187,7 +111,7 @@ class EventController extends \BaseController {
 	private function loadEventData($event)
 	{
 		$event["location"] = $event->location_id;
-		   
+
 
 		$invites = EventInvitation::where('event_id', '=', $event->id)->get();
 

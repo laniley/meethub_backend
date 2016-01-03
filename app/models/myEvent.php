@@ -15,7 +15,7 @@ class myEvent extends Eloquent {
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('location_id');
+	protected $fillable = array('fb_id');
 
 	public function location()
  	{

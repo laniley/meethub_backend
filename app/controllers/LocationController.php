@@ -42,6 +42,8 @@ class LocationController extends \BaseController {
 		$location->latitude = Input::get('location.latitude');
 		$location->longitude = Input::get('location.longitude');
 
+		$location->save();
+
 	  return '{"location":'.$location.'}';
 	}
 

@@ -14,7 +14,7 @@ class Location extends Eloquent{
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('created_at', 'updated_at');
+	protected $fillable = array('fb_id');
 
 	public function events()
  	{
